@@ -4,14 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>DataTrack Pro</title>
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0e1014" id="themeColorMeta">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="DataTrack">
-<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -452,6 +444,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
 @media(max-width:360px){.big-timer{font-size:62px;}.mts-time{font-size:62px;}.ftc-time{font-size:44px;}.ftc-zone-count{font-size:28px;}}
+
+/* ── WAKE LOCK STATUS DOT (diagnostic patch) ── */
+.wl-badge{display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);font-family:var(--font-body);transition:color .3s,border-color .3s;}
+.wl-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
+.wl-badge.wl-active{color:var(--green);border-color:rgba(39,174,96,0.4);}
+.wl-badge.wl-active .wl-dot{background:var(--green);box-shadow:0 0 6px rgba(39,174,96,0.6);}
+.wl-badge.wl-error{color:var(--red-b);border-color:rgba(192,57,43,0.4);}
+.wl-badge.wl-error .wl-dot{background:var(--red-b);}
+.wl-badge.wl-unsupported{color:var(--text3);border-color:var(--border);}
+body.light-mode .wl-badge{background:var(--surface);}
 </style>
 </head>
 <body>
@@ -459,6 +461,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 
 <header class="app-header">
   <div class="logo">Data<span class="logo-dot">.</span><em>Track</em></div>
+  <div class="wl-badge" id="wlBadge" title="Screen Wake Lock status">
+    <div class="wl-dot" id="wlDot"></div>
+    <span id="wlLabel">WAKE</span>
+  </div>
   <button class="gear-btn" onclick="openSettings()" aria-label="Settings">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
@@ -757,17 +763,66 @@ let sessions=[];
 
 /* ── Wake Lock ── */
 let wakeLock=null;
+
+function setWLBadge(state, msg){
+  const badge=document.getElementById('wlBadge');
+  const label=document.getElementById('wlLabel');
+  if(!badge||!label)return;
+  badge.className='wl-badge';
+  if(state==='active'){badge.classList.add('wl-active');label.textContent='WAKE ON';}
+  else if(state==='error'){badge.classList.add('wl-error');label.textContent='WAKE ERR';}
+  else if(state==='unsupported'){badge.classList.add('wl-unsupported');label.textContent='NO WAKE';}
+  else{label.textContent='WAKE OFF';}
+  if(msg)console.log('[WakeLock]',state,msg);
+}
+
 async function acquireWakeLock(){
-  if(!('wakeLock' in navigator))return;
-  try{wakeLock=await navigator.wakeLock.request('screen');}
-  catch(err){console.warn('Wake lock request failed:',err.name,err.message);}
+  if(!('wakeLock' in navigator)){
+    setWLBadge('unsupported','navigator.wakeLock not available in this browser/context');
+    return;
+  }
+  // If already held and active, do nothing
+  if(wakeLock&&!wakeLock.released){
+    setWLBadge('active','already held');
+    return;
+  }
+  try{
+    wakeLock=await navigator.wakeLock.request('screen');
+    setWLBadge('active','acquired successfully');
+    wakeLock.addEventListener('release',()=>{
+      console.log('[WakeLock] released by system');
+      setWLBadge('off','released by system');
+      wakeLock=null;
+    });
+  }catch(err){
+    setWLBadge('error',err.name+': '+err.message);
+    console.warn('[WakeLock] request failed:',err.name,err.message);
+  }
 }
+
 function releaseWakeLock(){
-  if(wakeLock){wakeLock.release();wakeLock=null;}
+  if(wakeLock){
+    wakeLock.release();
+    wakeLock=null;
+    setWLBadge('off','manually released');
+  }
 }
+
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'&&(timerRunning||mtsRunning))acquireWakeLock();
+  if(document.visibilityState==='visible'&&(timerRunning||mtsRunning)){
+    console.log('[WakeLock] visibility restored — re-acquiring');
+    acquireWakeLock();
+  }
 });
+
+// Run a support check on load so badge shows immediately
+(function checkWLSupport(){
+  if(!('wakeLock' in navigator)){
+    setWLBadge('unsupported','not supported');
+  }else{
+    setWLBadge('off','supported, not yet acquired');
+  }
+})();
 
 /* ── helpers ── */
 function pad(n){return String(n).padStart(2,'0');}
@@ -1940,9 +1995,6 @@ function setTheme(v){
   document.body.classList.toggle('light-mode',v==='light');
   document.getElementById('theme-dark').classList.toggle('active',v==='dark');
   document.getElementById('theme-light').classList.toggle('active',v==='light');
-  /* Keep PWA status bar in sync */
-  const meta=document.getElementById('themeColorMeta');
-  if(meta)meta.setAttribute('content',v==='light'?'#f2f4f7':'#0e1014');
 }
 function setSouthpaw(v){
   southpaw=v;
@@ -1954,15 +2006,6 @@ function setSouthpaw(v){
 document.getElementById('addModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAddModal();});
 document.getElementById('settingsModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeSettings();});
 document.getElementById('confirmOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeConfirm();});
-
-/* ── Service Worker registration ── */
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(reg=>console.log('[SW] Registered, scope:',reg.scope))
-      .catch(err=>console.warn('[SW] Registration failed:',err));
-  });
-}
 </script>
 </body>
 </html>
