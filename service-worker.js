@@ -5,7 +5,7 @@
 const CACHE_NAME = 'datatrack-pro-v0.9';
 
 const ASSETS_TO_CACHE = [
-  './datatrack_pro-0_9.html',
+  './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
