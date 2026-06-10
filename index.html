@@ -9,11 +9,11 @@
 <style>
 :root {
   --bg:#0e1014;--bg2:#13161b;--bg3:#1a1e26;
-  --border:rgba(255,255,255,0.13);--border2:rgba(255,255,255,0.22);
+  --border:rgba(255,255,255,0.20);--border2:rgba(255,255,255,0.32);
   --accent:#e8a020;--accent2:#c07810;--accent-glow:rgba(232,160,32,0.18);
   --green:#27ae60;--green-d:#1e8449;
   --red:#c0392b;--red-b:#e74c3c;
-  --text:#eef0f4;--text2:#b8bdc8;--text3:#717a8a;
+  --text:#eef0f4;--text2:#c8d0de;--text3:#8e9aad;
   --radius:14px;
   --font-display:'Oswald',sans-serif;
   --font-mono:'Share Tech Mono',monospace;
@@ -76,10 +76,10 @@ body.southpaw .sw-btns{flex-direction:row-reverse;}
 body.southpaw .confirm-btns{flex-direction:row-reverse;}
 body.southpaw .modal-btns{flex-direction:row-reverse;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overscroll-behavior:none;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);height:100vh;overflow:hidden;overscroll-behavior:none;display:flex;flex-direction:column;}
 
 /* HEADER */
-.app-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:50;}
+.app-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:50;flex-shrink:0;}
 .logo{font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:3px;color:var(--text);text-transform:uppercase;}
 .logo em{color:var(--accent);font-style:normal;}
 .logo-dot{color:var(--red-b);font-style:normal;}
@@ -88,15 +88,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .gear-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
 /* TABS */
-.tab-bar{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 12px;overflow-x:auto;scrollbar-width:none;}
+.tab-bar{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 12px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
 .tab-bar::-webkit-scrollbar{display:none;}
 .tab{padding:12px 14px;font-family:var(--font-display);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;position:relative;top:1px;white-space:nowrap;flex-shrink:0;}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
 
-/* LAYOUT */
-.main{padding:14px;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
-.view{display:none;}
-.view.active{display:flex;flex-direction:column;gap:12px;}
+/* LAYOUT — swipe track */
+.main{max-width:520px;width:100%;margin:0 auto;flex:1;overflow:hidden;position:relative;padding:0;}
+.tabs-track{display:flex;width:400%;height:100%;will-change:transform;transition:transform .3s cubic-bezier(.22,.68,0,1);}
+.tabs-track.swiping{transition:none;}
+.view{width:25%;flex-shrink:0;display:flex;flex-direction:column;gap:12px;padding:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.view>*{flex-shrink:0;}
 
 /* CARD */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
@@ -308,9 +310,17 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 .ftc-btn.end-b.active{color:var(--text2);opacity:1;cursor:pointer;}
 .ftc-btn.end-b.active:hover{color:var(--green);border-color:var(--green);background:var(--yes-bg);}
 
-/* Delete button (top-right of card) */
-.ftc-del{background:transparent;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:2px 5px;border-radius:4px;transition:color .15s;line-height:1;}
-.ftc-del:hover{color:var(--red-b);}
+/* Three-dot menu */
+.ftc-menu-wrap{position:relative;}
+.ftc-menu-btn{background:transparent;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .15s;line-height:1;letter-spacing:2px;}
+.ftc-menu-btn:hover{color:var(--text);}
+.ftc-dropdown{display:none;position:absolute;top:100%;right:0;margin-top:4px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;z-index:60;min-width:120px;box-shadow:0 8px 24px rgba(0,0,0,0.55);}
+.ftc-dropdown.open{display:block;}
+.ftc-dropdown-item{display:block;width:100%;padding:10px 14px;background:transparent;border:none;color:var(--text2);font-family:var(--font-display);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;text-align:left;cursor:pointer;transition:background .1s,color .1s;}
+.ftc-dropdown-item:hover{background:var(--bg3);color:var(--text);}
+.ftc-dropdown-item:not(:last-child){border-bottom:1px solid var(--border);}
+.ftc-dropdown-item.ftc-dd-danger:hover{color:var(--red-b);}
+body.light-mode .ftc-dropdown{background:var(--bg2);box-shadow:0 8px 24px rgba(0,0,0,0.15);}
 
 /* ═══════════════════════════════════════════ */
 
@@ -444,16 +454,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-hei
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
 @media(max-width:360px){.big-timer{font-size:62px;}.mts-time{font-size:62px;}.ftc-time{font-size:44px;}.ftc-zone-count{font-size:28px;}}
-
-/* ── WAKE LOCK STATUS DOT (diagnostic patch) ── */
-.wl-badge{display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);font-family:var(--font-body);transition:color .3s,border-color .3s;}
-.wl-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
-.wl-badge.wl-active{color:var(--green);border-color:rgba(39,174,96,0.4);}
-.wl-badge.wl-active .wl-dot{background:var(--green);box-shadow:0 0 6px rgba(39,174,96,0.6);}
-.wl-badge.wl-error{color:var(--red-b);border-color:rgba(192,57,43,0.4);}
-.wl-badge.wl-error .wl-dot{background:var(--red-b);}
-.wl-badge.wl-unsupported{color:var(--text3);border-color:var(--border);}
-body.light-mode .wl-badge{background:var(--surface);}
 </style>
 </head>
 <body>
@@ -461,10 +461,6 @@ body.light-mode .wl-badge{background:var(--surface);}
 
 <header class="app-header">
   <div class="logo">Data<span class="logo-dot">.</span><em>Track</em></div>
-  <div class="wl-badge" id="wlBadge" title="Screen Wake Lock status">
-    <div class="wl-dot" id="wlDot"></div>
-    <span id="wlLabel">WAKE</span>
-  </div>
   <button class="gear-btn" onclick="openSettings()" aria-label="Settings">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
   </button>
@@ -478,9 +474,10 @@ body.light-mode .wl-badge{background:var(--surface);}
 </div>
 
 <div class="main">
+<div class="tabs-track" id="tabsTrack">
 
   <!-- INTERVAL VIEW -->
-  <div class="view active" id="view-interval">
+  <div class="view" id="view-interval">
     <div class="card">
       <div class="card-header"><span class="card-title">Session Label</span></div>
       <div class="card-body" style="padding-top:10px;padding-bottom:10px;">
@@ -629,6 +626,7 @@ body.light-mode .wl-badge{background:var(--surface);}
     </div>
   </div>
 </div>
+</div>
 
 <!-- SESSION DETAIL PANEL -->
 <div class="detail-panel" id="detailPanel">
@@ -655,11 +653,11 @@ body.light-mode .wl-badge{background:var(--surface);}
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <div class="confirm-icon">⚠️</div>
-    <div class="confirm-msg">Permanently erase this session?</div>
-    <div class="confirm-sub">This action cannot be undone.</div>
+    <div class="confirm-msg" id="confirmMsg">Permanently erase this session?</div>
+    <div class="confirm-sub" id="confirmSub">This action cannot be undone.</div>
     <div class="confirm-btns">
-      <button class="confirm-btn no" onclick="closeConfirm()">No</button>
-      <button class="confirm-btn yes" onclick="doDeleteSession()">Yes</button>
+      <button class="confirm-btn no" onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-btn yes" onclick="doDeleteConfirm()">Delete</button>
     </div>
   </div>
 </div>
@@ -684,7 +682,7 @@ body.light-mode .wl-badge{background:var(--surface);}
     </div>
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closeAddModal()">Cancel</button>
-      <button class="modal-btn confirm" onclick="confirmAdd()">Add</button>
+      <button class="modal-btn confirm" id="addModalBtn" onclick="confirmAdd()">Add</button>
     </div>
   </div>
 </div>
@@ -763,66 +761,17 @@ let sessions=[];
 
 /* ── Wake Lock ── */
 let wakeLock=null;
-
-function setWLBadge(state, msg){
-  const badge=document.getElementById('wlBadge');
-  const label=document.getElementById('wlLabel');
-  if(!badge||!label)return;
-  badge.className='wl-badge';
-  if(state==='active'){badge.classList.add('wl-active');label.textContent='WAKE ON';}
-  else if(state==='error'){badge.classList.add('wl-error');label.textContent='WAKE ERR';}
-  else if(state==='unsupported'){badge.classList.add('wl-unsupported');label.textContent='NO WAKE';}
-  else{label.textContent='WAKE OFF';}
-  if(msg)console.log('[WakeLock]',state,msg);
-}
-
 async function acquireWakeLock(){
-  if(!('wakeLock' in navigator)){
-    setWLBadge('unsupported','navigator.wakeLock not available in this browser/context');
-    return;
-  }
-  // If already held and active, do nothing
-  if(wakeLock&&!wakeLock.released){
-    setWLBadge('active','already held');
-    return;
-  }
-  try{
-    wakeLock=await navigator.wakeLock.request('screen');
-    setWLBadge('active','acquired successfully');
-    wakeLock.addEventListener('release',()=>{
-      console.log('[WakeLock] released by system');
-      setWLBadge('off','released by system');
-      wakeLock=null;
-    });
-  }catch(err){
-    setWLBadge('error',err.name+': '+err.message);
-    console.warn('[WakeLock] request failed:',err.name,err.message);
-  }
+  if(!('wakeLock' in navigator))return;
+  try{wakeLock=await navigator.wakeLock.request('screen');}
+  catch(err){console.warn('Wake lock request failed:',err.name,err.message);}
 }
-
 function releaseWakeLock(){
-  if(wakeLock){
-    wakeLock.release();
-    wakeLock=null;
-    setWLBadge('off','manually released');
-  }
+  if(wakeLock){wakeLock.release();wakeLock=null;}
 }
-
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'&&(timerRunning||mtsRunning)){
-    console.log('[WakeLock] visibility restored — re-acquiring');
-    acquireWakeLock();
-  }
+  if(document.visibilityState==='visible'&&(timerRunning||mtsRunning))acquireWakeLock();
 });
-
-// Run a support check on load so badge shows immediately
-(function checkWLSupport(){
-  if(!('wakeLock' in navigator)){
-    setWLBadge('unsupported','not supported');
-  }else{
-    setWLBadge('off','supported, not yet acquired');
-  }
-})();
 
 /* ── helpers ── */
 function pad(n){return String(n).padStart(2,'0');}
@@ -853,12 +802,50 @@ updatePicker();
 
 /* ── Tabs ── */
 const tabIds=['interval','timers','stopwatch','summary'];
+let currentTabIndex=0;
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',tabIds[i]===t));
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-'+t).classList.add('active');
+  const idx=tabIds.indexOf(t);if(idx<0)return;
+  currentTabIndex=idx;
+  document.getElementById('tabsTrack').style.transform=`translateX(-${idx*25}%)`;
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',i===idx));
   if(t==='summary')renderSummary();
 }
+
+/* ── Swipe navigation ── */
+(function initSwipe(){
+  const track=document.getElementById('tabsTrack');
+  let startX=0,startY=0,deltaX=0,swiping=false,scrolling=false;
+  const LOCK=15,THRESHOLD=0.3;
+  track.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+    deltaX=0;swiping=false;scrolling=false;
+    track.classList.add('swiping');
+  },{passive:true});
+  track.addEventListener('touchmove',e=>{
+    const dx=e.touches[0].clientX-startX;
+    const dy=e.touches[0].clientY-startY;
+    if(!swiping&&!scrolling){
+      if(Math.abs(dx)>LOCK){swiping=true;}
+      else if(Math.abs(dy)>LOCK){scrolling=true;}
+      else return;
+    }
+    if(scrolling)return;
+    e.preventDefault();
+    deltaX=dx;
+    const viewW=track.parentElement.offsetWidth;
+    const base=-currentTabIndex*viewW;
+    track.style.transform=`translateX(${base+deltaX}px)`;
+  },{passive:false});
+  track.addEventListener('touchend',()=>{
+    track.classList.remove('swiping');
+    if(!swiping){switchTab(tabIds[currentTabIndex]);return;}
+    const viewW=track.parentElement.offsetWidth;
+    const thresh=viewW*THRESHOLD;
+    if(deltaX<-thresh&&currentTabIndex<tabIds.length-1)switchTab(tabIds[currentTabIndex+1]);
+    else if(deltaX>thresh&&currentTabIndex>0)switchTab(tabIds[currentTabIndex-1]);
+    else switchTab(tabIds[currentTabIndex]);
+  },{passive:true});
+})();
 
 /* ── Mode ── */
 const modeHints={
@@ -1422,13 +1409,7 @@ function renderDetailBody(s){
 }
 
 /* ── Confirm delete ── */
-function confirmClearSession(){document.getElementById('confirmOverlay').classList.add('open');}
-function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('open');}
-function doDeleteSession(){
-  if(openSessionIndex===null)return;
-  sessions.splice(openSessionIndex,1);
-  closeConfirm();closeDetail();renderSummary();
-}
+/* (confirm/delete handled in GENERALIZED DELETE CONFIRM block) */
 
 /* ── CSV export ── */
 function exportSessionCSV(){
@@ -1665,7 +1646,13 @@ function renderMultiTimers(){
     return`<div class="${cardCls}" id="ftc-card-${mt.id}">
       <div class="ftc-topbar">
         <div class="ftc-name">${mt.name}</div>
-        <button class="ftc-del" onclick="deleteMT(${mt.id})">✕</button>
+        <div class="ftc-menu-wrap">
+          <button class="ftc-menu-btn" onclick="toggleCardMenu('timer',${mt.id},event)">⋮</button>
+          <div class="ftc-dropdown" id="menu-timer-${mt.id}">
+            <button class="ftc-dropdown-item" onclick="openEditModal('timer',${mt.id})">Edit</button>
+            <button class="ftc-dropdown-item ftc-dd-danger" onclick="confirmDeleteCard('timer',${mt.id})">Delete</button>
+          </div>
+        </div>
       </div>
       <div class="ftc-zones">
         <div class="ftc-zone ftc-zone-inc${inactiveCls}" id="ftc-zone-inc-${mt.id}" onclick="handleZoneTap(${mt.id},'inc',event)">
@@ -1814,7 +1801,13 @@ function renderStopwatches(){
     return`<div class="${cardCls}" id="sw-card-${sw.id}">
       <div class="ftc-topbar">
         <div class="ftc-name">${sw.name}</div>
-        <button class="ftc-del" onclick="deleteSW(${sw.id})">✕</button>
+        <div class="ftc-menu-wrap">
+          <button class="ftc-menu-btn" onclick="toggleCardMenu('sw',${sw.id},event)">⋮</button>
+          <div class="ftc-dropdown" id="menu-sw-${sw.id}">
+            <button class="ftc-dropdown-item" onclick="openEditModal('sw',${sw.id})">Edit</button>
+            <button class="ftc-dropdown-item ftc-dd-danger" onclick="confirmDeleteCard('sw',${sw.id})">Delete</button>
+          </div>
+        </div>
       </div>
       <div class="ftc-zones">
         <div class="ftc-zone ftc-zone-inc${inactiveCls}" id="sw-zone-inc-${sw.id}" onclick="handleSWZoneTap(${sw.id},'inc',event)">
@@ -1959,19 +1952,60 @@ function endSW(id){
 });
 renderStopwatches();
 
-/* ══ ADD MODAL ══ */
+/* ══ ADD / EDIT MODAL ══ */
 let addModalMode='timer';
+let editTarget=null; // null = add mode, {type:'timer'|'sw', id} = edit mode
 function openAddModal(type){
-  addModalMode=type;
+  addModalMode=type;editTarget=null;
   document.getElementById('addModalTitle').textContent=type==='timer'?'New Timer':'New Stopwatch';
+  document.getElementById('addModalBtn').textContent='Add';
   document.getElementById('durationField').style.display=type==='timer'?'':'none';
   document.getElementById('newItemName').value='';
   document.getElementById('newHr').value='0';document.getElementById('newMin').value='5';document.getElementById('newSec').value='0';
   document.getElementById('addModal').classList.add('open');
   document.getElementById('newItemName').focus();
 }
-function closeAddModal(){document.getElementById('addModal').classList.remove('open');}
+function openEditModal(type,id){
+  closeAllMenus();
+  addModalMode=type;editTarget={type,id};
+  document.getElementById('addModalTitle').textContent=type==='timer'?'Edit Timer':'Edit Stopwatch';
+  document.getElementById('addModalBtn').textContent='Save';
+  document.getElementById('durationField').style.display=type==='timer'?'':'none';
+  if(type==='timer'){
+    const mt=getMT(id);if(!mt)return;
+    document.getElementById('newItemName').value=mt.name;
+    const ts=mt.totalSecs;
+    document.getElementById('newHr').value=Math.floor(ts/3600);
+    document.getElementById('newMin').value=Math.floor((ts%3600)/60);
+    document.getElementById('newSec').value=ts%60;
+  }else{
+    const sw=getSW(id);if(!sw)return;
+    document.getElementById('newItemName').value=sw.name;
+  }
+  document.getElementById('addModal').classList.add('open');
+  document.getElementById('newItemName').focus();
+}
+function closeAddModal(){document.getElementById('addModal').classList.remove('open');editTarget=null;}
 function confirmAdd(){
+  if(editTarget){
+    /* ── Edit mode ── */
+    const name=document.getElementById('newItemName').value.trim();
+    if(editTarget.type==='timer'){
+      const mt=getMT(editTarget.id);if(!mt){closeAddModal();return;}
+      const h=parseInt(document.getElementById('newHr').value)||0,m=parseInt(document.getElementById('newMin').value)||0,s=parseInt(document.getElementById('newSec').value)||0;
+      const total=h*3600+m*60+s;if(total<5){alert('Minimum 5 seconds.');return;}
+      if(name)mt.name=name;
+      mt.totalSecs=total;
+      if(!mt.startedOnce){mt.remaining=total;}
+      renderMultiTimers();
+    }else{
+      const sw=getSW(editTarget.id);if(!sw){closeAddModal();return;}
+      if(name)sw.name=name;
+      renderStopwatches();
+    }
+    closeAddModal();return;
+  }
+  /* ── Add mode ── */
   const name=document.getElementById('newItemName').value.trim()||(addModalMode==='timer'?'Timer '+(multiTimers.length+1):'Stopwatch '+(stopwatches.length+1));
   if(addModalMode==='timer'){
     const h=parseInt(document.getElementById('newHr').value)||0,m=parseInt(document.getElementById('newMin').value)||0,s=parseInt(document.getElementById('newSec').value)||0;
@@ -1979,6 +2013,46 @@ function confirmAdd(){
     multiTimers.push(makeMT(name,total));renderMultiTimers();
   }else{stopwatches.push({id:nextSWId++,name,elapsed:0,running:false,tick:null,laps:[],correct:0,incorrect:0,lastLapCorrect:0,lastLapIncorrect:0,startedOnce:false,startTime:null});renderStopwatches();}
   closeAddModal();
+}
+
+/* ══ THREE-DOT MENU ══ */
+function closeAllMenus(){document.querySelectorAll('.ftc-dropdown.open').forEach(d=>d.classList.remove('open'));}
+function toggleCardMenu(type,id,evt){
+  evt.stopPropagation();
+  const menu=document.getElementById('menu-'+type+'-'+id);
+  const wasOpen=menu&&menu.classList.contains('open');
+  closeAllMenus();
+  if(!wasOpen&&menu)menu.classList.add('open');
+}
+document.addEventListener('click',()=>closeAllMenus());
+
+/* ══ GENERALIZED DELETE CONFIRM ══ */
+let pendingDelete=null;
+function confirmDeleteCard(type,id){
+  closeAllMenus();
+  pendingDelete={type,id};
+  document.getElementById('confirmMsg').textContent=type==='timer'?'Delete this timer?':'Delete this stopwatch?';
+  document.getElementById('confirmSub').textContent='This action cannot be undone.';
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function confirmClearSession(){
+  pendingDelete={type:'session'};
+  document.getElementById('confirmMsg').textContent='Permanently erase this session?';
+  document.getElementById('confirmSub').textContent='This action cannot be undone.';
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('open');pendingDelete=null;}
+function doDeleteConfirm(){
+  if(!pendingDelete){closeConfirm();return;}
+  if(pendingDelete.type==='timer')deleteMT(pendingDelete.id);
+  else if(pendingDelete.type==='sw')deleteSW(pendingDelete.id);
+  else if(pendingDelete.type==='session')doDeleteSession();
+  closeConfirm();
+}
+function doDeleteSession(){
+  if(openSessionIndex===null)return;
+  sessions.splice(openSessionIndex,1);
+  closeDetail();renderSummary();
 }
 
 /* ══ AUDIO / SETTINGS ══ */
