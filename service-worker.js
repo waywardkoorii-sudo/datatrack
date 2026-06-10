@@ -2,7 +2,7 @@
    Caches the app shell for full offline use.
    Update CACHE_NAME when deploying a new version to force cache refresh. */
 
-const CACHE_NAME = 'datatrack-pro-v0.9';
+const CACHE_NAME = 'datatrack-pro-v0.9.1';
 
 const ASSETS_TO_CACHE = [
   './index.html',
