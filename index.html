@@ -453,6 +453,64 @@ body.light-mode .ftc-dropdown{background:var(--bg2);box-shadow:0 8px 24px rgba(0
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
+
+/* ═══════════════════════════════════════════
+   RECORDING BIN (v0.9.2) — discontinuous cadence
+   ═══════════════════════════════════════════ */
+/* Config: record-window picker */
+.bin-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.rec-picker{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;}
+.rec-picker.hidden{display:none;}
+.rec-unit{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.rec-step{width:54px;height:30px;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:background .1s,transform .08s;}
+.rec-step:hover{background:var(--surface2);}
+.rec-step:active{transform:scale(0.93);}
+.rec-step svg{width:13px;height:13px;stroke:var(--text2);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.rec-val{width:54px;height:44px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:22px;color:var(--accent);}
+.rec-lbl{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.rec-sep{font-family:var(--font-mono);font-size:22px;color:var(--text3);margin-top:24px;}
+
+/* RECORD phase state on the countdown display (amber) */
+.timer-wrap.record-phase{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow);}
+.timer-wrap.record-phase::after{opacity:1;}
+.mts-wrap.record-phase{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow);}
+.mts-wrap.record-phase::after{opacity:1;}
+.big-timer.record,.mts-time.record{color:var(--accent);animation:pulse-r .6s ease infinite alternate;}
+.record-tag{display:none;font-family:var(--font-display);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;min-height:17px;}
+.timer-wrap.record-phase .record-tag{display:block;}
+
+/* Bin editor — replaces clicker during the record phase, amber frame */
+.bin-editor{display:none;flex-direction:column;align-items:center;gap:14px;width:100%;padding:16px 14px;border:2px solid var(--accent);border-radius:var(--radius);background:var(--accent-glow);}
+.bin-editor.show{display:flex;}
+.bin-editor-title{font-family:var(--font-display);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);text-align:center;}
+.bin-editor-sub{font-size:11px;color:var(--text3);text-align:center;margin-top:-8px;line-height:1.4;}
+/* Partial: count stepper, red minus / green plus */
+.bin-count-row{display:flex;align-items:center;justify-content:center;gap:18px;}
+.bin-step-btn{width:64px;height:64px;border-radius:50%;border:2px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font-display);font-size:34px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:transform .08s,border-color .15s;line-height:1;user-select:none;}
+.bin-step-btn:active{transform:scale(0.92);}
+.bin-step-btn.minus{border-color:var(--red-b);color:var(--red-b);}
+.bin-step-btn.plus{border-color:var(--green);color:var(--green);}
+.bin-count-val{font-family:var(--font-mono);font-size:46px;min-width:78px;text-align:center;color:var(--text);line-height:1;}
+.bin-derived{font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:2px;text-transform:uppercase;}
+.bin-derived.yes{color:var(--green);}
+.bin-derived.no{color:var(--red-b);}
+/* Whole: YES/NO toggle, green/red */
+.bin-yn-row{display:flex;gap:10px;width:100%;}
+.bin-yn-btn{flex:1;padding:18px 6px;border-radius:12px;border:2px solid var(--border2);background:var(--surface2);font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:2px;color:var(--text3);cursor:pointer;touch-action:manipulation;transition:transform .08s,border-color .15s,color .15s,background .15s;}
+.bin-yn-btn:active{transform:scale(0.96);}
+.bin-yn-btn.yes.sel{border-color:var(--green);color:var(--green);background:rgba(39,174,96,0.14);}
+.bin-yn-btn.no.sel{border-color:var(--red-b);color:var(--red-b);background:rgba(192,57,43,0.14);}
+/* Whole carry tab — minimized next-interval state */
+.carry-tab{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 14px;border:1px dashed var(--border2);border-radius:10px;background:var(--surface);}
+.carry-tab.warn{animation:pulse-r .5s ease infinite alternate;border-color:var(--accent);border-style:solid;}
+.carry-tab-lbl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.carry-tab-pill{display:flex;gap:4px;}
+.carry-opt{padding:6px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:1px;color:var(--text3);cursor:pointer;touch-action:manipulation;transition:background .12s,color .12s,border-color .12s;}
+.carry-opt.yes.sel{background:rgba(39,174,96,0.16);color:var(--green);border-color:var(--green);}
+.carry-opt.no.sel{background:rgba(192,57,43,0.16);color:var(--red-b);border-color:var(--red-b);}
+body.southpaw .bin-count-row{flex-direction:row-reverse;}
+body.southpaw .bin-yn-row{flex-direction:row-reverse;}
+
 @media(max-width:360px){.big-timer{font-size:62px;}.mts-time{font-size:62px;}.ftc-time{font-size:44px;}.ftc-zone-count{font-size:28px;}}
 </style>
 </head>
@@ -532,8 +590,39 @@ body.light-mode .ftc-dropdown{background:var(--bg2);box-shadow:0 8px 24px rgba(0
       </div>
     </div>
 
+    <!-- RECORDING BIN (v0.9.2) -->
+    <div class="card" id="binCard">
+      <div class="card-header"><span class="card-title">Recording Bin</span></div>
+      <div class="card-body">
+        <div class="bin-toggle-row">
+          <div style="font-size:12px;color:var(--text3);max-width:210px;line-height:1.4;">Pause after each interval to record &amp; verify the score</div>
+          <div class="tog-group">
+            <button class="tog-opt" id="bin-on" onclick="setBins(true)">On</button>
+            <button class="tog-opt active" id="bin-off" onclick="setBins(false)">Off</button>
+          </div>
+        </div>
+        <div class="rec-picker hidden" id="recPicker">
+          <div class="rec-unit">
+            <div class="rec-lbl">Min</div>
+            <button class="rec-step" onclick="doRecAdj('min',1)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <div class="rec-val" id="recMinVal">00</div>
+            <button class="rec-step" onclick="doRecAdj('min',-1)"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+          </div>
+          <div class="rec-sep">:</div>
+          <div class="rec-unit">
+            <div class="rec-lbl">Sec</div>
+            <button class="rec-step" onclick="doRecAdj('sec',1)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <div class="rec-val" id="recSecVal">05</div>
+            <button class="rec-step" onclick="doRecAdj('sec',-1)"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+          </div>
+          <div style="margin-left:12px;font-size:11px;color:var(--text3);max-width:110px;line-height:1.3;">Record-window length</div>
+        </div>
+      </div>
+    </div>
+
     <!-- COUNTDOWN TIMER (partial / whole modes) -->
     <div class="timer-wrap" id="timerWrap">
+      <div class="record-tag" id="recordTag">Record Window</div>
       <div class="session-name-display" id="sessionNameDisplay"></div>
       <div class="big-timer" id="bigTimer">00:00</div>
       <div class="meta-row">
@@ -580,6 +669,7 @@ body.light-mode .ftc-dropdown{background:var(--bg2);box-shadow:0 8px 24px rgba(0
             <div class="click-icon" id="clickIcon">TAP</div>
             <div class="click-sub" id="clickSub">Start to enable</div>
           </button>
+          <div class="bin-editor" id="binEditor"></div>
           <div class="hist-list" id="histList"></div>
         </div>
 
@@ -753,6 +843,11 @@ let mtsRunning=false,mtsTick=null,mtsElapsed=0,mtsStartBase=0;
 let mtsHistory=[]; // {value:'yes'|'no', wallTime:'HH:MM:SS', seq:n}
 let mtsSeq=0;
 
+/* ── Recording-bin state (v0.9.2) ── */
+let binsEnabled=false,recordSecs=5,recMin=0,recSec=5;
+let binPhase='observe',recordRemaining=0,binWarningFired=false,carryState=false;
+let mtsSampleSecs=0,mtsSampleRemaining=0,mtsAwaiting=false,mtsBinInit=false;
+
 /* ── Session timestamps ── */
 let sessionStartTime=null; // wall-clock HH:MM:SS captured on first Start press
 let sessionEndTime=null;   // wall-clock HH:MM:SS captured when End is pressed
@@ -799,6 +894,34 @@ function updatePicker(){
   document.getElementById('metaDuration').textContent=pad(selHr)+':'+pad(selMin)+':'+pad(selSec);
 }
 updatePicker();
+
+/* ══ RECORDING BIN — config + helpers (v0.9.2) ══ */
+function setBins(v){
+  if(timerRunning||mtsRunning)return;
+  binsEnabled=v;
+  document.getElementById('bin-on').classList.toggle('active',v);
+  document.getElementById('bin-off').classList.toggle('active',!v);
+  updateBinUI();
+}
+function updateBinUI(){
+  const isMTS=(currentMode==='momentary');
+  // Interval-duration picker is hidden only for momentary-without-bins (bins give momentary a sampling interval)
+  document.getElementById('pickerCard').style.display=(isMTS&&!binsEnabled)?'none':'';
+  document.getElementById('recPicker').classList.toggle('hidden',!binsEnabled);
+}
+function doRecAdj(unit,d){
+  if(timerRunning||mtsRunning)return;
+  if(unit==='min'){recMin=Math.max(0,Math.min(59,recMin+d));}
+  else{let i=SEC5.indexOf(recSec)+d;if(i<0)i=0;if(i>=SEC5.length)i=SEC5.length-1;recSec=SEC5[i];}
+  if(recMin===0&&recSec===0)recSec=5;
+  recordSecs=recMin*60+recSec;
+  updateRecPicker();
+}
+function updateRecPicker(){
+  document.getElementById('recMinVal').textContent=pad(recMin);
+  document.getElementById('recSecVal').textContent=pad(recSec);
+}
+updateRecPicker();updateBinUI();
 
 /* ── Tabs ── */
 const tabIds=['interval','timers','stopwatch','summary'];
@@ -860,11 +983,11 @@ function setMode(m){
   document.getElementById('modeHint').textContent=modeHints[m];
   // Show/hide picker card
   const isMTS=(m==='momentary');
-  document.getElementById('pickerCard').style.display=isMTS?'none':'';
   document.getElementById('timerWrap').style.display=isMTS?'none':'';
   document.getElementById('mtsWrap').style.display=isMTS?'':'none';
   document.getElementById('clickerArea').style.display=isMTS?'none':'flex';
   document.getElementById('mtsYNArea').style.display=isMTS?'flex':'none';
+  updateBinUI();
   renderModeUI();
 }
 function renderModeUI(){
@@ -938,6 +1061,13 @@ function handleMTSResponse(val,evt){
 
   updateMTSStats();
   renderMTSHistory();
+
+  if(binsEnabled){
+    mtsAwaiting=false;
+    mtsSampleRemaining=mtsSampleSecs;
+    setMTSButtons(false);
+    updateMTSBinDisplay();
+  }
 }
 
 function renderMTSHistory(){
@@ -954,6 +1084,29 @@ function renderMTSHistory(){
 }
 
 /* ── MTS stopwatch controls ── */
+function setMTSButtons(on){
+  const yb=document.getElementById('mtsYesBtn'),nb=document.getElementById('mtsNoBtn');
+  if(on){yb.classList.remove('disabled');yb.classList.add('enabled');nb.classList.remove('disabled');nb.classList.add('enabled');}
+  else{yb.classList.add('disabled');yb.classList.remove('enabled');nb.classList.add('disabled');nb.classList.remove('enabled');}
+}
+function updateMTSBinDisplay(){
+  const t=document.getElementById('mtsTimer'),w=document.getElementById('mtsWrap');
+  if(mtsAwaiting){
+    t.textContent='NOW';t.classList.add('record');w.classList.add('record-phase');
+    document.getElementById('mtsNameDisplay').textContent='Sample now — tap YES or NO';
+  }else{
+    t.textContent=fmtTime(Math.max(mtsSampleRemaining,0));t.classList.remove('record');w.classList.remove('record-phase');
+    document.getElementById('mtsNameDisplay').textContent=document.getElementById('sessionName').value.trim();
+  }
+}
+function mtsBinTick(){
+  mtsElapsed=Date.now()-mtsStartBase;
+  if(!mtsAwaiting){
+    mtsSampleRemaining--;
+    if(mtsSampleRemaining<=0){mtsAwaiting=true;triggerAlert();setMTSButtons(true);}
+  }
+  updateMTSBinDisplay();
+}
 function startMTS(){
   mtsRunning=true;
   mtsStartBase=Date.now()-mtsElapsed;
@@ -962,15 +1115,25 @@ function startMTS(){
   document.getElementById('mtsTimer').classList.add('running');
   document.getElementById('mtsNameDisplay').textContent=document.getElementById('sessionName').value.trim();
   document.getElementById('endBtn').classList.add('active');
-  // Enable YES/NO buttons
-  const yb=document.getElementById('mtsYesBtn'),nb=document.getElementById('mtsNoBtn');
-  yb.classList.remove('disabled');yb.classList.add('enabled');
-  nb.classList.remove('disabled');nb.classList.add('enabled');
-  // Start tick
-  mtsTick=setInterval(()=>{
-    mtsElapsed=Date.now()-mtsStartBase;
-    document.getElementById('mtsTimer').textContent=fmtElapsedHHMMSS(mtsElapsed);
-  },500);
+  if(binsEnabled){
+    if(!mtsBinInit){
+      mtsSampleSecs=selHr*3600+selMin*60+selSec;if(mtsSampleSecs<5)mtsSampleSecs=5;
+      mtsSampleRemaining=mtsSampleSecs;mtsAwaiting=false;mtsBinInit=true;
+    }
+    setMTSButtons(mtsAwaiting);
+    updateMTSBinDisplay();
+    mtsTick=setInterval(mtsBinTick,1000);
+  }else{
+    // Enable YES/NO buttons
+    const yb=document.getElementById('mtsYesBtn'),nb=document.getElementById('mtsNoBtn');
+    yb.classList.remove('disabled');yb.classList.add('enabled');
+    nb.classList.remove('disabled');nb.classList.add('enabled');
+    // Start tick
+    mtsTick=setInterval(()=>{
+      mtsElapsed=Date.now()-mtsStartBase;
+      document.getElementById('mtsTimer').textContent=fmtElapsedHHMMSS(mtsElapsed);
+    },500);
+  }
   const sb=document.getElementById('startBtn');sb.textContent='Pause';sb.className='btn-main stop';
   document.getElementById('modeCard').style.opacity='0.45';document.getElementById('modeCard').style.pointerEvents='none';
   acquireWakeLock();
@@ -986,10 +1149,12 @@ function resetMTSState(){
   releaseWakeLock();
   clearInterval(mtsTick);mtsRunning=false;mtsElapsed=0;mtsStartBase=0;
   mtsHistory=[];mtsSeq=0;
+  mtsSampleSecs=0;mtsSampleRemaining=0;mtsAwaiting=false;mtsBinInit=false;
   sessionStartTime=null;sessionEndTime=null;
   document.getElementById('mtsTimer').textContent='00:00:00';
   document.getElementById('mtsTimer').className='mts-time';
   document.getElementById('mtsWrap').classList.remove('running');
+  document.getElementById('mtsWrap').classList.remove('record-phase');
   document.getElementById('mtsNameDisplay').textContent='';
   document.getElementById('startBtn').textContent='Start';document.getElementById('startBtn').className='btn-main';
   document.getElementById('endBtn').classList.remove('active');
@@ -1109,6 +1274,7 @@ function onIntervalEnd(){
     entry.value=wasYes;entry.taps=null;
     const carry=wholeActive;
     wholeInvalidated=false;wholeQualified=false;wholeWasOnAtStart=carry;
+    if(binsEnabled)carryState=carry;
     const btn=document.getElementById('clickBtn');
     if(carry){
       btn.className='click-btn on-state';
@@ -1133,9 +1299,129 @@ function renderHistory(){
   }).join('');
 }
 
+/* ══ RECORDING BIN — record phase (partial/whole) ══ */
+/* Editor binds to history[0] — the interval that just ended. Edits commit live. */
+function renderBinEditor(){
+  const ed=document.getElementById('binEditor');
+  const e=history[0];
+  if(!e){ed.innerHTML='';return;}
+  if(e.mode==='partial'){
+    const taps=e.taps||0,isYes=taps>0;
+    ed.innerHTML=`
+      <div class="bin-editor-title">Record · Interval ${e.num}</div>
+      <div class="bin-editor-sub">Adjust the count for the interval that just ended</div>
+      <div class="bin-count-row">
+        <button class="bin-step-btn minus" onclick="binAdjust(-1)">−</button>
+        <div class="bin-count-val" id="binCountVal">${taps}</div>
+        <button class="bin-step-btn plus" onclick="binAdjust(1)">+</button>
+      </div>
+      <div class="bin-derived ${isYes?'yes':'no'}" id="binDerived">${isYes?'YES · occurrence':'NO · no occurrence'}</div>`;
+  }else{
+    const isYes=(e.value===true);
+    ed.innerHTML=`
+      <div class="bin-editor-title">Record · Interval ${e.num}</div>
+      <div class="bin-editor-sub">Confirm or correct the interval that just ended</div>
+      <div class="bin-yn-row">
+        <button class="bin-yn-btn yes ${isYes?'sel':''}" id="binWholeYes" onclick="binSetWhole(true)">YES</button>
+        <button class="bin-yn-btn no ${!isYes?'sel':''}" id="binWholeNo" onclick="binSetWhole(false)">NO</button>
+      </div>
+      <div class="carry-tab" id="carryTab">
+        <span class="carry-tab-lbl">Next interval starts</span>
+        <div class="carry-tab-pill">
+          <button class="carry-opt yes ${carryState?'sel':''}" id="carryYes" onclick="setCarry(true)">YES</button>
+          <button class="carry-opt no ${!carryState?'sel':''}" id="carryNo" onclick="setCarry(false)">NO</button>
+        </div>
+      </div>`;
+  }
+}
+function binAdjust(d){
+  const e=history[0];
+  if(!e||e.mode!=='partial')return;
+  e.taps=Math.max(0,(e.taps||0)+d);
+  e.value=e.taps>0;
+  const cv=document.getElementById('binCountVal');if(cv)cv.textContent=e.taps;
+  const dv=document.getElementById('binDerived');
+  if(dv){dv.className='bin-derived '+(e.value?'yes':'no');dv.textContent=e.value?'YES · occurrence':'NO · no occurrence';}
+  updateStats();renderHistory();
+}
+function binSetWhole(v){
+  const e=history[0];
+  if(!e||e.mode==='partial')return;
+  e.value=v;
+  const y=document.getElementById('binWholeYes'),n=document.getElementById('binWholeNo');
+  if(y)y.classList.toggle('sel',v);
+  if(n)n.classList.toggle('sel',!v);
+  updateStats();renderHistory();
+}
+function setCarry(v){
+  carryState=v;
+  const y=document.getElementById('carryYes'),n=document.getElementById('carryNo');
+  if(y)y.classList.toggle('sel',v);
+  if(n)n.classList.toggle('sel',!v);
+}
+function enterRecordBin(){
+  binPhase='record';
+  recordRemaining=recordSecs;
+  binWarningFired=false;
+  document.getElementById('timerWrap').classList.add('record-phase');
+  document.getElementById('clickBtn').style.display='none';
+  document.getElementById('binEditor').classList.add('show');
+  renderBinEditor();
+  const disp=document.getElementById('bigTimer');
+  disp.className='big-timer record';
+  disp.textContent=fmtTime(recordRemaining);
+  disp.classList.toggle('compact',disp.textContent.length>5);
+  document.getElementById('progFill').style.width='0%';
+  // Short windows: fire the resume warning immediately so it never gets clipped
+  if(recordSecs<=3){
+    binWarningFired=true;triggerAlert();
+    const ct=document.getElementById('carryTab');if(ct)ct.classList.add('warn');
+  }
+}
+function exitRecordBin(){
+  binPhase='observe';
+  document.getElementById('timerWrap').classList.remove('record-phase');
+  document.getElementById('binEditor').classList.remove('show');
+  document.getElementById('clickBtn').style.display='';
+  intervalCount++;elapsedInInt=0;
+  currentIntervalStart=new Date();
+  document.getElementById('metaInterval').textContent=intervalCount;
+  const disp=document.getElementById('bigTimer');
+  disp.className='big-timer running';
+  disp.textContent=fmtTime(intervalSecs);
+  disp.classList.toggle('compact',disp.textContent.length>5);
+  const fill=document.getElementById('progFill');
+  fill.style.width='0%';fill.className='prog-fill';
+  if(currentMode==='whole'){
+    // Carry tab determines the starting on/off state of the new interval
+    wholeActive=carryState;
+    wholeInvalidated=false;wholeQualified=false;wholeWasOnAtStart=carryState;
+    const btn=document.getElementById('clickBtn');
+    if(carryState){
+      btn.className='click-btn on-state';
+      document.getElementById('clickIcon').textContent='ON';
+      document.getElementById('clickIcon').className='click-icon amber';
+      document.getElementById('clickSub').textContent='Active — stay ON all interval';
+    }else{
+      btn.className='click-btn';
+      document.getElementById('clickIcon').textContent='OFF';
+      document.getElementById('clickIcon').className='click-icon';
+      document.getElementById('clickSub').textContent='Tap to activate';
+    }
+  }
+}
+
 /* ── Timer controls (partial/whole) ── */
 function toggleTimer(){timerRunning?pauseTimer():startTimer();}
 function startTimer(){
+  if(binsEnabled&&binPhase==='record'){
+    // Resuming inside a record bin — restart the tick only, keep editor state intact
+    timerRunning=true;
+    const sb=document.getElementById('startBtn');sb.textContent='Pause';sb.className='btn-main stop';
+    timerTick=setInterval(tick,1000);
+    acquireWakeLock();
+    return;
+  }
   intervalSecs=selHr*3600+selMin*60+selSec;if(intervalSecs<5)intervalSecs=5;
   timerRunning=true;
   const sb=document.getElementById('startBtn');sb.textContent='Pause';sb.className='btn-main stop';
@@ -1162,6 +1448,18 @@ function pauseTimer(){
   document.getElementById('timerWrap').classList.remove('running');
 }
 function tick(){
+  if(binsEnabled&&binPhase==='record'){
+    recordRemaining--;
+    if(recordRemaining<=0){exitRecordBin();return;}
+    if(!binWarningFired&&recordRemaining<=3){
+      binWarningFired=true;triggerAlert();
+      const ct=document.getElementById('carryTab');if(ct)ct.classList.add('warn');
+    }
+    const rdisp=document.getElementById('bigTimer');
+    rdisp.textContent=fmtTime(recordRemaining);
+    rdisp.classList.toggle('compact',rdisp.textContent.length>5);
+    return;
+  }
   elapsedInInt++;totalElapsed++;
   if(currentMode==='whole')wholeIntervalTick();
   const rem=intervalSecs-elapsedInInt;
@@ -1175,6 +1473,11 @@ function tick(){
   disp.classList.toggle('finishing',fin);disp.classList.toggle('running',!fin);fill.classList.toggle('finishing',fin);
   if(elapsedInInt>=intervalSecs){
     triggerAlert();onIntervalEnd();
+    if(binsEnabled){
+      elapsedInInt=0;        // observe interval already scored; prevents End re-scoring
+      enterRecordBin();
+      return;
+    }
     intervalCount++;elapsedInInt=0;
     currentIntervalStart=new Date();
     document.getElementById('metaInterval').textContent=intervalCount;
@@ -1186,6 +1489,10 @@ function resetTimer(){
   clearInterval(timerTick);timerRunning=false;
   elapsedInInt=0;totalElapsed=0;intervalCount=0;currentIntervalStart=null;
   partialTaps=0;wholeActive=false;wholeQualified=false;wholeInvalidated=false;wholeWasOnAtStart=false;
+  binPhase='observe';recordRemaining=0;binWarningFired=false;carryState=false;
+  document.getElementById('timerWrap').classList.remove('record-phase');
+  document.getElementById('binEditor').classList.remove('show');
+  document.getElementById('clickBtn').style.display='';
   sessionStartTime=null;sessionEndTime=null;
   document.getElementById('startBtn').textContent='Start';document.getElementById('startBtn').className='btn-main';
   document.getElementById('endBtn').classList.remove('active');
@@ -1217,6 +1524,10 @@ function endSession(){
     commitSession();
     elapsedInInt=0;totalElapsed=0;intervalCount=0;currentIntervalStart=null;
     partialTaps=0;wholeActive=false;wholeQualified=false;wholeInvalidated=false;wholeWasOnAtStart=false;
+    binPhase='observe';recordRemaining=0;binWarningFired=false;carryState=false;
+    document.getElementById('timerWrap').classList.remove('record-phase');
+    document.getElementById('binEditor').classList.remove('show');
+    document.getElementById('clickBtn').style.display='';
     sessionStartTime=null;sessionEndTime=null;
     history=[];
     document.getElementById('startBtn').textContent='Start';document.getElementById('startBtn').className='btn-main';
@@ -1259,6 +1570,7 @@ function commitSession(){
       yes:yesCount,no:noCount,pct,
       mtsDetail:[...mtsHistory].reverse()
     };
+    if(binsEnabled){s.binsEnabled=true;s.observeSecs=mtsSampleSecs;s.recordSecs=recordSecs;}
     sessions.unshift(s);
   }else{
     const done=history.length;
@@ -1273,6 +1585,7 @@ function commitSession(){
     }else{
       s.intervalDetail=history.map(e=>({num:e.num,startTime:e.startTime,value:e.value})).reverse();
     }
+    if(binsEnabled){s.binsEnabled=true;s.observeSecs=intervalSecs;s.recordSecs=recordSecs;}
     sessions.unshift(s);
   }
 }
@@ -1314,7 +1627,8 @@ function renderDetailBody(s){
     <div class="sum-row"><span class="sum-row-l">Date</span><span class="sum-row-v">${s.date}</span></div>
     <div class="sum-row"><span class="sum-row-l">Start time</span><span class="sum-row-v">${s.startTime||'—'}</span></div>
     <div class="sum-row"><span class="sum-row-l">End time</span><span class="sum-row-v">${s.endTime||'—'}</span></div>
-    <div class="sum-row"><span class="sum-row-l">Duration run</span><span class="sum-row-v">${s.totalElapsed}</span></div>`;
+    <div class="sum-row"><span class="sum-row-l">Duration run</span><span class="sum-row-v">${s.totalElapsed}</span></div>${s.binsEnabled?`
+    <div class="sum-row"><span class="sum-row-l">Recording bin</span><span class="sum-row-v">${fmtTime(s.observeSecs??0)} obs · ${fmtTime(s.recordSecs??0)} rec</span></div>`:''}`;
 
   if(s.mode==='timer'){
     html+=`<div class="sum-divider"></div>
