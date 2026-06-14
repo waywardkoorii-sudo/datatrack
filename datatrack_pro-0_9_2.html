@@ -1,0 +1,2399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>DataTrack Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0e1014;--bg2:#13161b;--bg3:#1a1e26;
+  --border:rgba(255,255,255,0.20);--border2:rgba(255,255,255,0.32);
+  --accent:#e8a020;--accent2:#c07810;--accent-glow:rgba(232,160,32,0.18);
+  --green:#27ae60;--green-d:#1e8449;
+  --red:#c0392b;--red-b:#e74c3c;
+  --text:#eef0f4;--text2:#c8d0de;--text3:#8e9aad;
+  --radius:14px;
+  --font-display:'Oswald',sans-serif;
+  --font-mono:'Share Tech Mono',monospace;
+  --font-body:'Barlow',sans-serif;
+  /* Surface palette — used for inputs, displays, history rows */
+  --surface:#0a0c10;--surface2:#22262f;--surface3:#0e1116;
+  --click-g1:#252a36;--click-g2:#111418;--yes-bg:#111a14;
+}
+
+/* ── LIGHT MODE ── */
+body.light-mode {
+  --bg:#f2f4f7;--bg2:#ffffff;--bg3:#e8ebf0;
+  --border:rgba(0,0,0,0.11);--border2:rgba(0,0,0,0.20);
+  --accent:#c87c0a;--accent2:#a06008;--accent-glow:rgba(200,124,10,0.16);
+  --green:#1a7a40;--green-d:#14602f;
+  --red:#b03a2e;--red-b:#c0392b;
+  --text:#1a1c22;--text2:#454a58;--text3:#7a8090;
+  --surface:#eaecf0;--surface2:#d8dbe2;--surface3:#e0e3e9;
+  --click-g1:#d4d8e2;--click-g2:#c8ccd6;--yes-bg:#d4ede0;
+}
+body.light-mode .app-header,body.light-mode .tab-bar{border-color:rgba(0,0,0,0.12);}
+body.light-mode .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+body.light-mode .flash-ovl{background:#c87c0a;}
+body.light-mode .timer-wrap,body.light-mode .mts-wrap{background:var(--surface);border-color:var(--border2);}
+body.light-mode .timer-wrap::after,body.light-mode .mts-wrap::after{background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+body.light-mode .pval,body.light-mode .name-field,body.light-mode .modal-input,body.light-mode .modal-dur-input{background:var(--surface);border-color:var(--border2);}
+body.light-mode .mode-tabs{background:var(--surface);}
+body.light-mode .mode-tab.active{background:var(--bg3);}
+body.light-mode .pct-bar,body.light-mode .stat-cell{background:var(--surface);border-color:var(--border);}
+body.light-mode .hist-row{background:var(--surface);}
+body.light-mode .click-btn{background:radial-gradient(circle at 38% 30%,var(--click-g1),var(--click-g2) 65%);border-color:#c0c4ce;}
+body.light-mode .click-btn.on-state{border-color:var(--accent);}
+body.light-mode .click-btn.invalid-state{border-color:var(--red);}
+body.light-mode .mts-yn-btn{background:radial-gradient(circle at 38% 30%,var(--click-g1),var(--click-g2) 65%);border-color:#c0c4ce;}
+body.light-mode .tog-group{background:var(--surface);border-color:var(--border2);}
+body.light-mode .sum-int-row{background:var(--surface);}
+body.light-mode .sess-row{background:var(--surface);}
+body.light-mode .sess-row:hover{background:var(--surface2);}
+body.light-mode .ftc-zone-inc{background:rgba(180,40,30,0.07);}
+body.light-mode .ftc-zone-cor{background:rgba(20,120,60,0.07);}
+body.light-mode .ftc-zone-inc:active,body.light-mode .ftc-zone-inc.flash-z{background:rgba(192,57,43,0.18);}
+body.light-mode .ftc-zone-cor:active,body.light-mode .ftc-zone-cor.flash-z{background:rgba(26,122,64,0.18);}
+body.light-mode .btn-end.active:hover{background:var(--yes-bg);}
+body.light-mode .btn-reset:hover,body.light-mode .util-btn:hover{background:var(--surface2);}
+body.light-mode .add-grid-btn:hover{border-color:var(--accent);color:var(--accent);}
+body.light-mode .confirm-box,body.light-mode .modal{background:var(--bg2);}
+body.light-mode .detail-panel{background:var(--bg);}
+body.light-mode .detail-header{background:var(--bg2);}
+body.light-mode .sum-card{background:var(--bg2);}
+body.light-mode .sw-card{background:var(--bg2);}
+body.light-mode .freq-stat-cell.cor-cell{background:rgba(20,120,60,0.10);}
+body.light-mode .freq-stat-cell.inc-cell{background:rgba(180,40,30,0.10);}
+body.light-mode .ftimer-card{background:var(--bg2);}
+
+/* ── SOUTHPAW ── */
+body.southpaw .ctrl-row{flex-direction:row-reverse;}
+body.southpaw .ftc-btns{flex-direction:row-reverse;}
+body.southpaw .ftc-zones{flex-direction:row-reverse;}
+body.southpaw .sw-btns{flex-direction:row-reverse;}
+body.southpaw .confirm-btns{flex-direction:row-reverse;}
+body.southpaw .modal-btns{flex-direction:row-reverse;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);height:100vh;overflow:hidden;overscroll-behavior:none;display:flex;flex-direction:column;}
+
+/* HEADER */
+.app-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:50;flex-shrink:0;}
+.logo{font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:3px;color:var(--text);text-transform:uppercase;}
+.logo em{color:var(--accent);font-style:normal;}
+.logo-dot{color:var(--red-b);font-style:normal;}
+.gear-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text2);width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:color .15s,background .15s;flex-shrink:0;}
+.gear-btn:hover{color:var(--accent);background:var(--surface2);}
+.gear-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* TABS */
+.tab-bar{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 12px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
+.tab-bar::-webkit-scrollbar{display:none;}
+.tab{padding:12px 14px;font-family:var(--font-display);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;position:relative;top:1px;white-space:nowrap;flex-shrink:0;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* LAYOUT — swipe track */
+.main{max-width:520px;width:100%;margin:0 auto;flex:1;overflow:hidden;position:relative;padding:0;}
+.tabs-track{display:flex;width:400%;height:100%;will-change:transform;transition:transform .3s cubic-bezier(.22,.68,0,1);}
+.tabs-track.swiping{transition:none;}
+.view{width:25%;flex-shrink:0;display:flex;flex-direction:column;gap:12px;padding:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.view>*{flex-shrink:0;}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.card-header{padding:11px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.card-title{font-family:var(--font-display);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);}
+.card-body{padding:14px;}
+
+/* TIMER DISPLAY */
+.timer-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 16px 18px;text-align:center;position:relative;overflow:hidden;}
+.timer-wrap::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .3s;}
+.timer-wrap.running::after{opacity:1;}
+.session-name-display{font-family:var(--font-display);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;min-height:17px;}
+.big-timer{font-family:var(--font-mono);font-size:78px;font-weight:300;line-height:1;letter-spacing:-2px;color:var(--text);transition:color .2s;padding:4px 0 6px;}
+.big-timer.running{color:var(--accent);}
+.big-timer.finishing{color:var(--red-b);animation:pulse-r .5s ease infinite alternate;}
+.big-timer.compact{font-size:56px;letter-spacing:-1px;}
+@keyframes pulse-r{from{opacity:1}to{opacity:.6}}
+.meta-row{display:flex;justify-content:center;gap:26px;margin-top:4px;}
+.meta-item{text-align:center;}
+.meta-val{font-family:var(--font-mono);font-size:14px;color:var(--text2);display:block;}
+.meta-lbl{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:2px;}
+.prog-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:14px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s linear;width:0%;}
+.prog-fill.finishing{background:var(--red-b);}
+
+/* MOMENTARY STOPWATCH DISPLAY */
+.mts-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 16px 18px;text-align:center;position:relative;overflow:hidden;}
+.mts-wrap::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .3s;}
+.mts-wrap.running::after{opacity:1;}
+.mts-label{font-family:var(--font-display);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;min-height:17px;}
+.mts-time{font-family:var(--font-mono);font-size:78px;font-weight:300;line-height:1;letter-spacing:-2px;color:var(--text);transition:color .2s;padding:4px 0 6px;}
+.mts-time.running{color:var(--accent);}
+
+/* NAME INPUT */
+.name-field{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--font-display);font-size:15px;letter-spacing:2px;text-transform:uppercase;padding:11px 14px;outline:none;transition:border-color .2s;}
+.name-field:focus{border-color:var(--accent);}
+.name-field::placeholder{color:var(--text3);}
+
+/* DURATION PICKER */
+.picker-row{display:flex;align-items:center;justify-content:center;}
+.picker-unit-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.picker-lbl{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);}
+.pu-inner{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.arr-btn{width:66px;height:34px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .1s,transform .08s;touch-action:manipulation;}
+.arr-btn:hover{background:var(--surface2);}
+.arr-btn:active{transform:scale(0.93);}
+.arr-btn svg{width:15px;height:15px;stroke:var(--text2);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.pval{width:66px;height:54px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:28px;color:var(--accent);letter-spacing:1px;}
+.pdiv{font-family:var(--font-mono);font-size:28px;color:var(--text3);padding:0 7px;margin-top:40px;}
+
+/* MODE SELECTOR */
+.mode-tabs{display:flex;background:var(--surface);border:1px solid var(--border2);border-radius:10px;overflow:hidden;}
+.mode-tab{flex:1;padding:11px 6px;font-family:var(--font-display);font-size:14px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);background:transparent;border:none;cursor:pointer;transition:background .15s,color .15s;position:relative;}
+.mode-tab:not(:last-child){border-right:1px solid var(--border);}
+.mode-tab.active{background:var(--bg3);color:var(--text);}
+.mode-tab.active::after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;background:var(--accent);border-radius:2px;}
+.mode-hint{font-size:12px;color:var(--text3);text-align:center;padding-top:6px;font-style:italic;min-height:18px;}
+
+/* CONTROLS — End LEFT, Reset MIDDLE, Start/Pause RIGHT */
+.ctrl-row{display:flex;gap:8px;}
+.btn-reset{padding:15px 18px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text2);font-family:var(--font-display);font-size:19px;letter-spacing:2px;cursor:pointer;transition:transform .08s,color .1s;touch-action:manipulation;}
+.btn-reset:hover{color:var(--text);background:var(--surface2);}
+.btn-reset:active{transform:scale(0.97);}
+/* End button — always visible, dimmed when no session is active */
+.btn-end{padding:15px 16px;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;color:var(--text3);font-family:var(--font-display);font-size:18px;letter-spacing:2px;cursor:not-allowed;transition:transform .08s,color .15s,border-color .15s,background .15s;touch-action:manipulation;white-space:nowrap;opacity:0.45;}
+/* Active state — session is running or paused */
+.btn-end.active{color:var(--text2);opacity:1;cursor:pointer;}
+.btn-end.active:hover{color:var(--green);border-color:var(--green);background:var(--yes-bg);}
+.btn-end.active:active{transform:scale(0.97);}
+.btn-main{flex:1;padding:15px;background:var(--accent);color:#111;border:none;border-radius:10px;font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:transform .08s,background .1s;touch-action:manipulation;}
+.btn-main:hover{background:#f0b030;}
+.btn-main:active{transform:scale(0.97);}
+.btn-main.stop{background:var(--red);color:#fff;}
+.btn-main.stop:hover{background:var(--red-b);}
+.btn-main.paused{background:#b07010;color:#fff;}
+
+/* STATS — 3 cells */
+.stats-strip{display:flex;gap:8px;margin-bottom:12px;}
+.stat-cell{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 6px;text-align:center;}
+.stat-n{font-family:var(--font-mono);font-size:22px;color:var(--text);display:block;}
+.stat-n.amber{color:var(--accent);}
+.stat-n.green{color:var(--green);}
+.stat-n.red{color:var(--red-b);}
+.stat-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:2px;display:block;}
+
+/* CLICKER */
+.clicker-center{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.click-btn{width:185px;height:185px;border-radius:50%;background:radial-gradient(circle at 38% 30%,var(--click-g1),var(--click-g2) 65%);border:3px solid var(--border2);box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 8px 28px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:transform .07s,box-shadow .07s,border-color .2s;position:relative;touch-action:manipulation;user-select:none;}
+.click-btn::before{content:'';position:absolute;top:14px;left:28%;width:44%;height:20%;background:rgba(255,255,255,0.05);border-radius:50%;pointer-events:none;}
+.click-btn:active{transform:scale(0.92);box-shadow:0 2px 10px rgba(0,0,0,0.7);}
+.click-btn.disabled{opacity:0.3;cursor:not-allowed;transform:none!important;}
+.click-btn.yes-state{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow),0 8px 28px rgba(0,0,0,0.55);}
+.click-btn.on-state{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow),0 8px 28px rgba(0,0,0,0.55);}
+.click-btn.invalid-state{border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,0.25),0 8px 28px rgba(0,0,0,0.55);}
+.click-btn .ripple{position:absolute;border-radius:50%;transform:scale(0);animation:ripple .5s linear;background:rgba(232,160,32,0.12);pointer-events:none;}
+@keyframes ripple{to{transform:scale(4);opacity:0;}}
+.click-icon{font-family:var(--font-display);font-size:44px;font-weight:600;letter-spacing:2px;color:var(--text2);line-height:1;transition:color .2s;}
+.click-icon.amber{color:var(--accent);}
+.click-icon.red{color:var(--red-b);}
+.click-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:500;text-align:center;max-width:140px;}
+.tap-badge{position:absolute;top:16px;right:16px;background:var(--accent);color:#111;font-family:var(--font-mono);font-size:13px;font-weight:500;border-radius:20px;padding:2px 8px;opacity:0;transition:opacity .2s;}
+.tap-badge.show{opacity:1;}
+
+/* MOMENTARY YES/NO BUTTONS */
+.mts-yn-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;}
+.mts-btn-pair{display:flex;flex-direction:column;gap:10px;width:185px;}
+.mts-yn-btn{width:185px;height:84px;border-radius:18px;border:3px solid var(--border2);background:radial-gradient(circle at 38% 30%,var(--click-g1),var(--click-g2) 65%);box-shadow:0 0 0 1px rgba(255,255,255,0.04),0 8px 28px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.05);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:transform .07s,box-shadow .07s,border-color .2s,background .15s;touch-action:manipulation;user-select:none;position:relative;overflow:hidden;}
+.mts-yn-btn:active{transform:scale(0.93);box-shadow:0 2px 10px rgba(0,0,0,0.7);}
+.mts-yn-btn.disabled{opacity:0.3;cursor:not-allowed;transform:none!important;}
+.mts-yn-btn.yes-btn{border-color:var(--border2);}
+.mts-yn-btn.yes-btn.enabled:hover{border-color:var(--accent);}
+.mts-yn-btn.no-btn{border-color:var(--border2);}
+.mts-yn-btn.no-btn.enabled:hover{border-color:var(--red);}
+.mts-yn-btn .ripple{position:absolute;border-radius:50%;transform:scale(0);animation:ripple .5s linear;pointer-events:none;}
+.mts-yn-btn.yes-btn .ripple{background:rgba(232,160,32,0.15);}
+.mts-yn-btn.no-btn .ripple{background:rgba(192,57,43,0.15);}
+.mts-yn-label{font-family:var(--font-display);font-size:32px;font-weight:600;letter-spacing:3px;line-height:1;transition:color .2s;}
+.mts-yn-btn.yes-btn .mts-yn-label{color:var(--text3);}
+.mts-yn-btn.yes-btn.enabled .mts-yn-label{color:var(--text2);}
+.mts-yn-btn.yes-btn:active .mts-yn-label,.mts-yn-btn.yes-btn.flash-yes .mts-yn-label{color:var(--accent);}
+.mts-yn-btn.no-btn .mts-yn-label{color:var(--text3);}
+.mts-yn-btn.no-btn.enabled .mts-yn-label{color:var(--text2);}
+.mts-yn-btn.no-btn:active .mts-yn-label,.mts-yn-btn.no-btn.flash-no .mts-yn-label{color:var(--red-b);}
+.mts-yn-sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:500;}
+
+/* PCT BAR */
+.pct-bar{width:100%;height:28px;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative;}
+.pct-fill{height:100%;background:linear-gradient(90deg,var(--green-d),var(--green));border-radius:8px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+.pct-lbl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;color:var(--text);font-weight:500;}
+
+/* HISTORY */
+.hist-list{display:flex;flex-direction:column;gap:3px;max-height:170px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent;width:100%;}
+.hist-row{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:var(--surface);border-radius:7px;border-left:3px solid transparent;font-size:13px;}
+.hist-row.yes{border-left-color:var(--accent);}
+.hist-row.no{border-left-color:var(--red);}
+.hist-label{color:var(--text2);font-weight:600;}
+.hist-val{font-family:var(--font-mono);font-size:13px;}
+.hist-val.amber{color:var(--accent);}
+.hist-val.red{color:var(--red-b);}
+.hist-meta{font-family:var(--font-mono);font-size:11px;color:var(--text3);margin-left:6px;}
+
+/* ═══════════════════════════════════════════
+   FREQUENCY-TIMER CARDS (v0.8)
+   Full-width, split tap zones, End button
+   ═══════════════════════════════════════════ */
+#multiGrid{display:flex;flex-direction:column;gap:12px;}
+
+.ftimer-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s;}
+.ftimer-card.running-card{border-color:rgba(232,160,32,0.35);}
+.ftimer-card.finished-card{border-color:rgba(192,57,43,0.45);}
+
+.ftc-topbar{padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.ftc-name{font-family:var(--font-display);font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+
+/* Split zone area */
+.ftc-zones{position:relative;display:flex;min-height:180px;user-select:none;}
+
+.ftc-zone{flex:1;position:relative;display:flex;flex-direction:column;padding:12px 14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;overflow:hidden;transition:background .1s;}
+
+.ftc-zone-inc{background:rgba(140,20,20,0.09);border-right:1px solid rgba(255,255,255,0.05);align-items:flex-start;}
+.ftc-zone-inc:active{background:rgba(192,57,43,0.22);}
+.ftc-zone-inc.flash-z{background:rgba(192,57,43,0.22);}
+
+.ftc-zone-cor{background:rgba(15,100,45,0.09);align-items:flex-end;}
+.ftc-zone-cor:active{background:rgba(39,174,96,0.2);}
+.ftc-zone-cor.flash-z{background:rgba(39,174,96,0.2);}
+
+/* Inactive state — before first Start */
+.ftc-zone.ftc-inactive{opacity:0.35;cursor:not-allowed;pointer-events:none;}
+
+/* Count + label in corners */
+.ftc-zone-count{font-family:var(--font-mono);font-size:36px;font-weight:400;line-height:1;z-index:1;transition:transform .08s;}
+.ftc-zone-count.inc{color:#c0392b;}
+.ftc-zone-count.cor{color:#27ae60;}
+.ftc-zone:active .ftc-zone-count{transform:scale(1.1);}
+.ftc-zone-sublbl{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);margin-top:4px;z-index:1;}
+
+/* Ripple inside zones */
+.ftc-zone .ripple{position:absolute;border-radius:50%;transform:scale(0);animation:ripple .5s linear;pointer-events:none;}
+.ftc-zone-inc .ripple{background:rgba(192,57,43,0.2);}
+.ftc-zone-cor .ripple{background:rgba(39,174,96,0.18);}
+
+/* Time + progress bar overlay (pointer-events:none so taps go to zones) */
+.ftc-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;gap:8px;}
+
+.ftc-time{font-family:var(--font-mono);font-size:56px;font-weight:300;letter-spacing:-2px;color:var(--text);line-height:1;transition:color .2s;}
+.running-card .ftc-time{color:var(--accent);}
+.finished-card .ftc-time{color:var(--red-b);animation:pulse-r .5s ease infinite alternate;}
+
+.ftc-prog{width:140px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.ftc-prog-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .5s linear;}
+.finished-card .ftc-prog-fill{background:var(--red-b);}
+
+/* Tap hint labels — subtle arrows in zone middles */
+.ftc-hint{position:absolute;bottom:14px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);opacity:0.6;pointer-events:none;z-index:1;}
+
+/* Button row */
+.ftc-btns{display:flex;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--border);}
+.ftc-btn{flex:1;padding:12px 6px;border:none;border-radius:8px;font-family:var(--font-display);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;touch-action:manipulation;transition:transform .07s,background .1s,color .1s;}
+.ftc-btn:active{transform:scale(0.95);}
+.ftc-btn.start{background:var(--accent);color:#111;}
+.ftc-btn.start:hover{background:#f0b030;}
+.ftc-btn.pause-b{background:#7a5010;color:#eee;}
+.ftc-btn.restart{background:var(--accent);color:#111;}
+.ftc-btn.restart:hover{background:#f0b030;}
+.ftc-btn.reset-b{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);}
+.ftc-btn.reset-b:hover{color:var(--text);}
+.ftc-btn.end-b{background:var(--bg3);color:var(--text3);border:1px solid var(--border2);opacity:0.45;cursor:not-allowed;}
+.ftc-btn.end-b.active{color:var(--text2);opacity:1;cursor:pointer;}
+.ftc-btn.end-b.active:hover{color:var(--green);border-color:var(--green);background:var(--yes-bg);}
+
+/* Three-dot menu */
+.ftc-menu-wrap{position:relative;}
+.ftc-menu-btn{background:transparent;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .15s;line-height:1;letter-spacing:2px;}
+.ftc-menu-btn:hover{color:var(--text);}
+.ftc-dropdown{display:none;position:absolute;top:100%;right:0;margin-top:4px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;overflow:hidden;z-index:60;min-width:120px;box-shadow:0 8px 24px rgba(0,0,0,0.55);}
+.ftc-dropdown.open{display:block;}
+.ftc-dropdown-item{display:block;width:100%;padding:10px 14px;background:transparent;border:none;color:var(--text2);font-family:var(--font-display);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;text-align:left;cursor:pointer;transition:background .1s,color .1s;}
+.ftc-dropdown-item:hover{background:var(--bg3);color:var(--text);}
+.ftc-dropdown-item:not(:last-child){border-bottom:1px solid var(--border);}
+.ftc-dropdown-item.ftc-dd-danger:hover{color:var(--red-b);}
+body.light-mode .ftc-dropdown{background:var(--bg2);box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+
+/* ═══════════════════════════════════════════ */
+
+/* STOPWATCH CARDS */
+.sw-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s;}
+.sw-card.running-sw{border-color:rgba(232,160,32,0.35);}
+.running-sw .ftc-time{color:var(--accent);}
+/* Lap subtitle shown inside zone overlay */
+.ftc-sublbl{font-family:var(--font-mono);font-size:12px;color:var(--text3);letter-spacing:0.5px;min-height:16px;}
+/* Lap button — gated exactly like End button */
+.ftc-btn.lap-b{background:var(--bg3);color:var(--text3);border:1px solid var(--border2);opacity:0.45;cursor:not-allowed;}
+.ftc-btn.lap-b.active{color:var(--text2);opacity:1;cursor:pointer;}
+.ftc-btn.lap-b.active:hover{color:var(--accent);border-color:rgba(232,160,32,0.4);}
+
+.add-grid-btn{width:100%;padding:15px;background:transparent;border:2px dashed var(--border2);border-radius:12px;color:var(--text3);font-family:var(--font-display);font-size:15px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:border-color .15s,color .15s;}
+.add-grid-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* SUMMARY LIST */
+.summary-empty{text-align:center;padding:36px 20px;color:var(--text3);font-family:var(--font-display);font-size:14px;letter-spacing:2px;text-transform:uppercase;}
+.sess-list{display:flex;flex-direction:column;gap:6px;}
+.sess-row{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s,background .15s;gap:12px;}
+.sess-row:hover{border-color:var(--border2);background:var(--surface3);}
+.sess-row:active{background:var(--surface);}
+.sess-row-left{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.sess-row-name{font-family:var(--font-display);font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sess-row-meta{display:flex;align-items:center;gap:8px;}
+.sess-row-date{font-size:11px;color:var(--text3);}
+.sess-row-mode{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--accent);background:rgba(232,160,32,0.1);padding:2px 7px;border-radius:20px;}
+.sess-row-chevron{color:var(--text3);flex-shrink:0;}
+.sess-row-chevron svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+/* SESSION DETAIL PANEL */
+.detail-panel{display:none;position:fixed;inset:0;background:var(--bg);z-index:100;overflow-y:auto;}
+.detail-panel.open{display:block;}
+.detail-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 14px;height:54px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;}
+.detail-back{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text2);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:color .15s;}
+.detail-back:hover{color:var(--text);}
+.detail-back svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.detail-title{font-family:var(--font-display);font-size:15px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.detail-actions{display:flex;gap:6px;flex-shrink:0;}
+.detail-body{padding:14px;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+
+/* DETAIL CONTENT */
+.sum-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.sum-head{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border-bottom:1px solid var(--border);}
+.sum-name{font-family:var(--font-display);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text);}
+.sum-mode{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--accent);background:rgba(232,160,32,0.1);padding:3px 8px;border-radius:20px;}
+.sum-body{padding:10px 14px;display:flex;flex-direction:column;gap:5px;}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;}
+.sum-row-l{color:var(--text2);}
+.sum-row-v{font-family:var(--font-mono);color:var(--text);font-size:13px;}
+.sum-divider{height:1px;background:var(--border);margin:4px 0;}
+.sum-int-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 8px;background:var(--bg3);border-radius:5px;}
+.sum-int-l{color:var(--text3);}
+.sum-int-v{font-family:var(--font-mono);font-size:12px;}
+.sum-int-v.amber{color:var(--accent);}
+.sum-int-v.red{color:var(--red-b);}
+
+/* Frequency summary stat blocks */
+.freq-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+.freq-stat-cell{border-radius:9px;padding:12px;text-align:center;}
+.freq-stat-cell.cor-cell{background:rgba(15,100,45,0.14);border:1px solid rgba(39,174,96,0.2);}
+.freq-stat-cell.inc-cell{background:rgba(140,20,20,0.14);border:1px solid rgba(192,57,43,0.2);}
+.freq-stat-n{font-family:var(--font-mono);font-size:30px;line-height:1;display:block;}
+.freq-stat-n.cor{color:#27ae60;}
+.freq-stat-n.inc{color:#c0392b;}
+.freq-stat-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-top:4px;display:block;}
+
+/* CONFIRM DIALOG */
+.confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.confirm-overlay.open{display:flex;}
+.confirm-box{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:24px;width:100%;max-width:340px;text-align:center;}
+.confirm-icon{font-size:32px;margin-bottom:12px;}
+.confirm-msg{font-family:var(--font-display);font-size:16px;letter-spacing:1.5px;color:var(--text);margin-bottom:6px;}
+.confirm-sub{font-size:12px;color:var(--text3);margin-bottom:22px;line-height:1.5;}
+.confirm-btns{display:flex;gap:8px;}
+.confirm-btn{flex:1;padding:13px;border-radius:9px;font-family:var(--font-display);font-size:15px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:transform .07s;}
+.confirm-btn:active{transform:scale(0.97);}
+.confirm-btn.no{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);}
+.confirm-btn.no:hover{color:var(--text);}
+.confirm-btn.yes{background:var(--red);color:#fff;}
+.confirm-btn.yes:hover{background:var(--red-b);}
+
+/* ACTION BUTTONS (detail panel) */
+.action-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:7px 12px;cursor:pointer;transition:color .15s,border-color .15s,background .15s;touch-action:manipulation;display:flex;align-items:center;gap:5px;}
+.action-btn:hover{color:var(--text);background:var(--surface2);}
+.action-btn:active{transform:scale(0.96);}
+.action-btn.csv:hover{color:var(--accent);border-color:rgba(232,160,32,0.4);}
+.action-btn.danger:hover{color:var(--red-b);border-color:rgba(192,57,43,0.4);}
+.action-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:22px;width:100%;max-width:380px;}
+.modal-title{font-family:var(--font-display);font-size:19px;letter-spacing:3px;text-transform:uppercase;color:var(--text);margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px;}
+.modal-field{margin-bottom:12px;}
+.modal-lbl{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:5px;display:block;}
+.modal-input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:9px;color:var(--text);font-family:var(--font-display);font-size:15px;letter-spacing:2px;text-transform:uppercase;padding:10px 14px;outline:none;}
+.modal-input:focus{border-color:var(--accent);}
+.modal-dur-row{display:flex;gap:8px;align-items:center;}
+.modal-dur-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:9px;color:var(--accent);font-family:var(--font-mono);font-size:20px;padding:9px 10px;outline:none;text-align:center;width:0;}
+.modal-dur-input:focus{border-color:var(--accent);}
+.modal-dur-sep{font-family:var(--font-mono);font-size:24px;color:var(--text3);}
+.modal-btns{display:flex;gap:8px;margin-top:16px;}
+.modal-btn{flex:1;padding:12px;border-radius:9px;font-family:var(--font-display);font-size:15px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;transition:transform .07s;}
+.modal-btn:active{transform:scale(0.97);}
+.modal-btn.confirm{background:var(--accent);color:#111;}
+.modal-btn.confirm:hover{background:#f0b030;}
+.modal-btn.cancel{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);}
+
+/* SETTINGS */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);gap:12px;}
+.setting-row:last-of-type{border-bottom:none;}
+.setting-name{font-size:14px;font-weight:600;color:var(--text);}
+.setting-desc{font-size:11px;color:var(--text3);margin-top:2px;}
+.tog-group{display:flex;background:var(--surface);border-radius:8px;border:1px solid var(--border2);overflow:hidden;flex-shrink:0;}
+.tog-opt{padding:6px 10px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text3);cursor:pointer;border:none;background:transparent;transition:background .15s,color .15s;font-family:var(--font-body);}
+.tog-opt.active{background:var(--accent);color:#111;}
+
+/* UTIL BTN */
+.util-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-family:var(--font-body);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:7px 14px;cursor:pointer;transition:color .15s;touch-action:manipulation;}
+.util-btn:hover{color:var(--text);background:var(--surface2);}
+.util-btn:active{transform:scale(0.96);}
+
+/* FLASH */
+.flash-ovl{position:fixed;inset:0;background:var(--accent);opacity:0;pointer-events:none;z-index:300;transition:opacity .06s;}
+.flash-ovl.flash{opacity:0.1;}
+
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
+
+/* ═══════════════════════════════════════════
+   RECORDING BIN (v0.9.2) — discontinuous cadence
+   ═══════════════════════════════════════════ */
+/* Config: record-window picker */
+.bin-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.rec-picker{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;}
+.rec-picker.hidden{display:none;}
+.rec-unit{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.rec-step{width:54px;height:30px;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:background .1s,transform .08s;}
+.rec-step:hover{background:var(--surface2);}
+.rec-step:active{transform:scale(0.93);}
+.rec-step svg{width:13px;height:13px;stroke:var(--text2);stroke-width:2.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.rec-val{width:54px;height:44px;background:var(--surface);border:1px solid var(--border2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:22px;color:var(--accent);}
+.rec-lbl{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+.rec-sep{font-family:var(--font-mono);font-size:22px;color:var(--text3);margin-top:24px;}
+
+/* RECORD phase state on the countdown display (amber) */
+.timer-wrap.record-phase{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow);}
+.timer-wrap.record-phase::after{opacity:1;}
+.mts-wrap.record-phase{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow);}
+.mts-wrap.record-phase::after{opacity:1;}
+.big-timer.record,.mts-time.record{color:var(--accent);animation:pulse-r .6s ease infinite alternate;}
+.record-tag{display:none;font-family:var(--font-display);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;min-height:17px;}
+.timer-wrap.record-phase .record-tag{display:block;}
+
+/* Bin editor — replaces clicker during the record phase, amber frame */
+.bin-editor{display:none;flex-direction:column;align-items:center;gap:14px;width:100%;padding:16px 14px;border:2px solid var(--accent);border-radius:var(--radius);background:var(--accent-glow);}
+.bin-editor.show{display:flex;}
+.bin-editor-title{font-family:var(--font-display);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);text-align:center;}
+.bin-editor-sub{font-size:11px;color:var(--text3);text-align:center;margin-top:-8px;line-height:1.4;}
+/* Partial: count stepper, red minus / green plus */
+.bin-count-row{display:flex;align-items:center;justify-content:center;gap:18px;}
+.bin-step-btn{width:64px;height:64px;border-radius:50%;border:2px solid var(--border2);background:var(--surface2);color:var(--text);font-family:var(--font-display);font-size:34px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:transform .08s,border-color .15s;line-height:1;user-select:none;}
+.bin-step-btn:active{transform:scale(0.92);}
+.bin-step-btn.minus{border-color:var(--red-b);color:var(--red-b);}
+.bin-step-btn.plus{border-color:var(--green);color:var(--green);}
+.bin-count-val{font-family:var(--font-mono);font-size:46px;min-width:78px;text-align:center;color:var(--text);line-height:1;}
+.bin-derived{font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:2px;text-transform:uppercase;}
+.bin-derived.yes{color:var(--green);}
+.bin-derived.no{color:var(--red-b);}
+/* Whole: YES/NO toggle, green/red */
+.bin-yn-row{display:flex;gap:10px;width:100%;}
+.bin-yn-btn{flex:1;padding:18px 6px;border-radius:12px;border:2px solid var(--border2);background:var(--surface2);font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:2px;color:var(--text3);cursor:pointer;touch-action:manipulation;transition:transform .08s,border-color .15s,color .15s,background .15s;}
+.bin-yn-btn:active{transform:scale(0.96);}
+.bin-yn-btn.yes.sel{border-color:var(--green);color:var(--green);background:rgba(39,174,96,0.14);}
+.bin-yn-btn.no.sel{border-color:var(--red-b);color:var(--red-b);background:rgba(192,57,43,0.14);}
+/* Whole carry tab — minimized next-interval state */
+.carry-tab{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 14px;border:1px dashed var(--border2);border-radius:10px;background:var(--surface);}
+.carry-tab.warn{animation:pulse-r .5s ease infinite alternate;border-color:var(--accent);border-style:solid;}
+.carry-tab-lbl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+.carry-tab-pill{display:flex;gap:4px;}
+.carry-opt{padding:6px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;font-family:var(--font-display);font-size:14px;font-weight:600;letter-spacing:1px;color:var(--text3);cursor:pointer;touch-action:manipulation;transition:background .12s,color .12s,border-color .12s;}
+.carry-opt.yes.sel{background:rgba(39,174,96,0.16);color:var(--green);border-color:var(--green);}
+.carry-opt.no.sel{background:rgba(192,57,43,0.16);color:var(--red-b);border-color:var(--red-b);}
+body.southpaw .bin-count-row{flex-direction:row-reverse;}
+body.southpaw .bin-yn-row{flex-direction:row-reverse;}
+
+@media(max-width:360px){.big-timer{font-size:62px;}.mts-time{font-size:62px;}.ftc-time{font-size:44px;}.ftc-zone-count{font-size:28px;}}
+</style>
+</head>
+<body>
+<div class="flash-ovl" id="flashOvl"></div>
+
+<header class="app-header">
+  <div class="logo">Data<span class="logo-dot">.</span><em>Track</em></div>
+  <button class="gear-btn" onclick="openSettings()" aria-label="Settings">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+</header>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('interval')">Interval</button>
+  <button class="tab" onclick="switchTab('timers')">Timers</button>
+  <button class="tab" onclick="switchTab('stopwatch')">Stopwatch</button>
+  <button class="tab" onclick="switchTab('summary')">Summary</button>
+</div>
+
+<div class="main">
+<div class="tabs-track" id="tabsTrack">
+
+  <!-- INTERVAL VIEW -->
+  <div class="view" id="view-interval">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Session Label</span></div>
+      <div class="card-body" style="padding-top:10px;padding-bottom:10px;">
+        <input class="name-field" id="sessionName" type="text" placeholder="E.G. FA TARGETING BX" maxlength="30">
+      </div>
+    </div>
+
+    <div class="card" id="modeCard">
+      <div class="card-header"><span class="card-title">Recording Mode</span></div>
+      <div class="card-body">
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="mt-partial" onclick="setMode('partial')">Partial</button>
+          <button class="mode-tab" id="mt-whole" onclick="setMode('whole')">Whole</button>
+          <button class="mode-tab" id="mt-momentary" onclick="setMode('momentary')">Momentary</button>
+        </div>
+        <div class="mode-hint" id="modeHint">Mark if it happened — first tap = YES, keep tapping to count more</div>
+      </div>
+    </div>
+
+    <!-- Interval duration picker (hidden in momentary mode) -->
+    <div class="card" id="pickerCard">
+      <div class="card-header"><span class="card-title">Interval Duration</span></div>
+      <div class="card-body">
+        <div class="picker-row">
+          <div class="picker-unit-wrap">
+            <div class="picker-lbl">Hr</div>
+            <div class="pu-inner">
+              <button class="arr-btn" onmousedown="startLP('hr',1)" onmouseup="stopLP('hr',1)" onmouseleave="stopLP()" ontouchstart="startLP('hr',1);event.preventDefault()" ontouchend="stopLP('hr',1)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+              <div class="pval" id="phr">00</div>
+              <button class="arr-btn" onmousedown="startLP('hr',-1)" onmouseup="stopLP('hr',-1)" onmouseleave="stopLP()" ontouchstart="startLP('hr',-1);event.preventDefault()" ontouchend="stopLP('hr',-1)"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            </div>
+          </div>
+          <div class="pdiv">:</div>
+          <div class="picker-unit-wrap">
+            <div class="picker-lbl">Min</div>
+            <div class="pu-inner">
+              <button class="arr-btn" onmousedown="startLP('min',1)" onmouseup="stopLP('min',1)" onmouseleave="stopLP()" ontouchstart="startLP('min',1);event.preventDefault()" ontouchend="stopLP('min',1)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+              <div class="pval" id="pmin">01</div>
+              <button class="arr-btn" onmousedown="startLP('min',-1)" onmouseup="stopLP('min',-1)" onmouseleave="stopLP()" ontouchstart="startLP('min',-1);event.preventDefault()" ontouchend="stopLP('min',-1)"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            </div>
+          </div>
+          <div class="pdiv">:</div>
+          <div class="picker-unit-wrap">
+            <div class="picker-lbl">Sec</div>
+            <div class="pu-inner">
+              <button class="arr-btn" onmousedown="startLP('sec',1)" onmouseup="stopLP('sec',1)" onmouseleave="stopLP()" ontouchstart="startLP('sec',1);event.preventDefault()" ontouchend="stopLP('sec',1)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+              <div class="pval" id="psec">00</div>
+              <button class="arr-btn" onmousedown="startLP('sec',-1)" onmouseup="stopLP('sec',-1)" onmouseleave="stopLP()" ontouchstart="startLP('sec',-1);event.preventDefault()" ontouchend="stopLP('sec',-1)"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECORDING BIN (v0.9.2) -->
+    <div class="card" id="binCard">
+      <div class="card-header"><span class="card-title">Recording Bin</span></div>
+      <div class="card-body">
+        <div class="bin-toggle-row">
+          <div style="font-size:12px;color:var(--text3);max-width:210px;line-height:1.4;">Pause after each interval to record &amp; verify the score</div>
+          <div class="tog-group">
+            <button class="tog-opt" id="bin-on" onclick="setBins(true)">On</button>
+            <button class="tog-opt active" id="bin-off" onclick="setBins(false)">Off</button>
+          </div>
+        </div>
+        <div class="rec-picker hidden" id="recPicker">
+          <div class="rec-unit">
+            <div class="rec-lbl">Min</div>
+            <button class="rec-step" onclick="doRecAdj('min',1)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <div class="rec-val" id="recMinVal">00</div>
+            <button class="rec-step" onclick="doRecAdj('min',-1)"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+          </div>
+          <div class="rec-sep">:</div>
+          <div class="rec-unit">
+            <div class="rec-lbl">Sec</div>
+            <button class="rec-step" onclick="doRecAdj('sec',1)"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <div class="rec-val" id="recSecVal">05</div>
+            <button class="rec-step" onclick="doRecAdj('sec',-1)"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+          </div>
+          <div style="margin-left:12px;font-size:11px;color:var(--text3);max-width:110px;line-height:1.3;">Record-window length</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN TIMER (partial / whole modes) -->
+    <div class="timer-wrap" id="timerWrap">
+      <div class="record-tag" id="recordTag">Record Window</div>
+      <div class="session-name-display" id="sessionNameDisplay"></div>
+      <div class="big-timer" id="bigTimer">00:00</div>
+      <div class="meta-row">
+        <div class="meta-item"><span class="meta-val" id="metaInterval">0</span><span class="meta-lbl">Interval</span></div>
+        <div class="meta-item"><span class="meta-val" id="metaDuration">00:01:00</span><span class="meta-lbl">Set</span></div>
+        <div class="meta-item"><span class="meta-val" id="metaTotal">00:00</span><span class="meta-lbl">Elapsed</span></div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+
+    <!-- MOMENTARY STOPWATCH (momentary mode only, hidden by default) -->
+    <div class="mts-wrap" id="mtsWrap" style="display:none;">
+      <div class="mts-label" id="mtsNameDisplay"></div>
+      <div class="mts-time" id="mtsTimer">00:00:00</div>
+    </div>
+
+    <!-- Controls: End | Reset | Start — shared across all modes -->
+    <div class="ctrl-row">
+      <button class="btn-end" id="endBtn" onclick="endSession()">End</button>
+      <button class="btn-reset" id="resetBtn" onclick="handleReset()">Reset</button>
+      <button class="btn-main" id="startBtn" onclick="handleStart()">Start</button>
+    </div>
+
+    <!-- Tracker panel -->
+    <div class="card">
+      <div class="card-header"><span class="card-title" id="trackerTitle">Partial Interval</span></div>
+      <div class="card-body">
+        <!-- 3 stat cells: YES, NO, Done -->
+        <div class="stats-strip">
+          <div class="stat-cell"><span class="stat-n green" id="sYes">0</span><span class="stat-l">YES</span></div>
+          <div class="stat-cell"><span class="stat-n red" id="sNo">0</span><span class="stat-l">NO</span></div>
+          <div class="stat-cell"><span class="stat-n" id="sDone">0</span><span class="stat-l" id="statDoneLabel">Done</span></div>
+        </div>
+        <!-- % bar -->
+        <div class="pct-bar" style="margin-bottom:12px;">
+          <div class="pct-fill" id="pctFill" style="width:0%"></div>
+          <div class="pct-lbl" id="pctLbl">0% with occurrence</div>
+        </div>
+
+        <!-- Partial / Whole clicker (hidden in momentary) -->
+        <div class="clicker-center" id="clickerArea">
+          <button class="click-btn disabled" id="clickBtn" onclick="handleClick(event)">
+            <div class="tap-badge" id="tapBadge">0</div>
+            <div class="click-icon" id="clickIcon">TAP</div>
+            <div class="click-sub" id="clickSub">Start to enable</div>
+          </button>
+          <div class="bin-editor" id="binEditor"></div>
+          <div class="hist-list" id="histList"></div>
+        </div>
+
+        <!-- Momentary YES / NO buttons (hidden in partial/whole) -->
+        <div class="mts-yn-wrap" id="mtsYNArea" style="display:none;">
+          <div class="mts-btn-pair">
+            <button class="mts-yn-btn yes-btn disabled" id="mtsYesBtn" onclick="handleMTSResponse('yes',event)">
+              <span class="mts-yn-label">YES</span>
+              <span class="mts-yn-sub">Behavior occurring</span>
+            </button>
+            <button class="mts-yn-btn no-btn disabled" id="mtsNoBtn" onclick="handleMTSResponse('no',event)">
+              <span class="mts-yn-label">NO</span>
+              <span class="mts-yn-sub">Behavior not occurring</span>
+            </button>
+          </div>
+          <div class="hist-list" id="mtsHistList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMERS VIEW -->
+  <div class="view" id="view-timers">
+    <div class="multi-grid" id="multiGrid"></div>
+    <button class="add-grid-btn" onclick="openAddModal('timer')">+ Add Timer</button>
+  </div>
+
+  <!-- STOPWATCH VIEW -->
+  <div class="view" id="view-stopwatch">
+    <div class="multi-grid" id="swGrid"></div>
+    <button class="add-grid-btn" onclick="openAddModal('sw')">+ Add Stopwatch</button>
+  </div>
+
+  <!-- SUMMARY VIEW -->
+  <div class="view" id="view-summary">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Session Summaries</span>
+        <button class="util-btn" onclick="clearSummaries()">Clear All</button>
+      </div>
+      <div class="card-body" id="summaryBody">
+        <div class="summary-empty">No sessions saved yet</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SESSION DETAIL PANEL -->
+<div class="detail-panel" id="detailPanel">
+  <div class="detail-header">
+    <button class="detail-back" onclick="closeDetail()" aria-label="Back">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="detail-title" id="detailTitle"></div>
+    <div class="detail-actions">
+      <button class="action-btn csv" onclick="exportSessionCSV()" title="Export CSV">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+        CSV
+      </button>
+      <button class="action-btn danger" onclick="confirmClearSession()" title="Delete session">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        Clear
+      </button>
+    </div>
+  </div>
+  <div class="detail-body" id="detailBody"></div>
+</div>
+
+<!-- CONFIRM DELETE DIALOG -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+    <div class="confirm-msg" id="confirmMsg">Permanently erase this session?</div>
+    <div class="confirm-sub" id="confirmSub">This action cannot be undone.</div>
+    <div class="confirm-btns">
+      <button class="confirm-btn no" onclick="closeConfirm()">Cancel</button>
+      <button class="confirm-btn yes" onclick="doDeleteConfirm()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-title" id="addModalTitle">New Timer</div>
+    <div class="modal-field">
+      <label class="modal-lbl">Name</label>
+      <input class="modal-input" id="newItemName" type="text" placeholder="LABEL" maxlength="20">
+    </div>
+    <div class="modal-field" id="durationField">
+      <label class="modal-lbl">Duration</label>
+      <div class="modal-dur-row">
+        <input class="modal-dur-input" id="newHr" type="number" min="0" max="23" value="0">
+        <div class="modal-dur-sep">:</div>
+        <input class="modal-dur-input" id="newMin" type="number" min="0" max="59" value="5">
+        <div class="modal-dur-sep">:</div>
+        <input class="modal-dur-input" id="newSec" type="number" min="0" max="59" value="0">
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn cancel" onclick="closeAddModal()">Cancel</button>
+      <button class="modal-btn confirm" id="addModalBtn" onclick="confirmAdd()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-title">Settings</div>
+    <div class="setting-row">
+      <div><div class="setting-name">Alert Type</div><div class="setting-desc">Notification at interval end</div></div>
+      <div class="tog-group">
+        <button class="tog-opt active" id="opt-tone" onclick="setAlert('tone')">Tone</button>
+        <button class="tog-opt" id="opt-vibrate" onclick="setAlert('vibrate')">Buzz</button>
+        <button class="tog-opt" id="opt-both" onclick="setAlert('both')">Both</button>
+        <button class="tog-opt" id="opt-none" onclick="setAlert('none')">Off</button>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-name">Tone Style</div><div class="setting-desc">Sound at end of interval</div></div>
+      <div class="tog-group">
+        <button class="tog-opt active" id="tone-beep" onclick="setTone('beep')">Beep</button>
+        <button class="tog-opt" id="tone-chime" onclick="setTone('chime')">Chime</button>
+        <button class="tog-opt" id="tone-bell" onclick="setTone('bell')">Bell</button>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-name">Visual Flash</div><div class="setting-desc">Screen flash at interval end</div></div>
+      <div class="tog-group">
+        <button class="tog-opt active" id="flash-on" onclick="setFlash(true)">On</button>
+        <button class="tog-opt" id="flash-off" onclick="setFlash(false)">Off</button>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-name">Theme</div><div class="setting-desc">Display color scheme</div></div>
+      <div class="tog-group">
+        <button class="tog-opt active" id="theme-dark" onclick="setTheme('dark')">Dark</button>
+        <button class="tog-opt" id="theme-light" onclick="setTheme('light')">Light</button>
+      </div>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-name">Handedness</div><div class="setting-desc">Flips button layout for left hand</div></div>
+      <div class="tog-group">
+        <button class="tog-opt active" id="hand-right" onclick="setSouthpaw(false)">Right</button>
+        <button class="tog-opt" id="hand-left" onclick="setSouthpaw(true)">Left</button>
+      </div>
+    </div>
+    <div style="padding:0 16px 16px;">
+      <button class="btn-reset" style="width:100%;padding:12px;font-family:var(--font-display);font-size:16px;letter-spacing:2px;" onclick="closeSettings()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ STATE ══ */
+let selHr=0,selMin=1,selSec=0;
+let timerRunning=false,timerTick=null;
+let intervalSecs=0,elapsedInInt=0,totalElapsed=0;
+let intervalCount=0,history=[];
+let currentIntervalStart=null;
+let alertType='tone',toneStyle='beep',useFlash=true,audioCtx=null;
+let currentMode='partial';
+let southpaw=false,themeMode='dark';
+let partialTaps=0;
+let wholeActive=false,wholeQualified=false,wholeInvalidated=false,wholeWasOnAtStart=false;
+
+/* ── Momentary Time Sampling state ── */
+let mtsRunning=false,mtsTick=null,mtsElapsed=0,mtsStartBase=0;
+let mtsHistory=[]; // {value:'yes'|'no', wallTime:'HH:MM:SS', seq:n}
+let mtsSeq=0;
+
+/* ── Recording-bin state (v0.9.2) ── */
+let binsEnabled=false,recordSecs=5,recMin=0,recSec=5;
+let binPhase='observe',recordRemaining=0,binWarningFired=false,carryState=false;
+let mtsSampleSecs=0,mtsSampleRemaining=0,mtsAwaiting=false,mtsBinInit=false;
+
+/* ── Session timestamps ── */
+let sessionStartTime=null; // wall-clock HH:MM:SS captured on first Start press
+let sessionEndTime=null;   // wall-clock HH:MM:SS captured when End is pressed
+
+let sessions=[];
+
+/* ── Wake Lock ── */
+let wakeLock=null;
+async function acquireWakeLock(){
+  if(!('wakeLock' in navigator))return;
+  try{wakeLock=await navigator.wakeLock.request('screen');}
+  catch(err){console.warn('Wake lock request failed:',err.name,err.message);}
+}
+function releaseWakeLock(){
+  if(wakeLock){wakeLock.release();wakeLock=null;}
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&(timerRunning||mtsRunning))acquireWakeLock();
+});
+
+/* ── helpers ── */
+function pad(n){return String(n).padStart(2,'0');}
+function fmtTime(s){if(s>=3600)return pad(Math.floor(s/3600))+':'+pad(Math.floor((s%3600)/60))+':'+pad(s%60);return pad(Math.floor(s/60))+':'+pad(s%60);}
+function fmtHHMMSS(d){if(!d)return'';return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());}
+function fmtElapsedHHMMSS(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return pad(h)+':'+pad(m%60)+':'+pad(s%60);}
+function nowWallClock(){return fmtHHMMSS(new Date());}
+
+/* ── Long-press (picker) ── */
+let lpT=null,lpI=null,lpFired=false;
+function startLP(u,d){stopLP();lpFired=false;lpT=setTimeout(()=>{lpFired=true;let c=0;lpI=setInterval(()=>{c++;doAdj(u,d);if(c===10){clearInterval(lpI);lpI=setInterval(()=>doAdj(u,d),50);}},140);},380);}
+function stopLP(u,d){clearTimeout(lpT);clearInterval(lpI);if(!lpFired&&u!==undefined)doAdj(u,d);lpT=null;lpI=null;lpFired=false;}
+const SEC5=[0,5,10,15,20,25,30,35,40,45,50,55];
+function doAdj(u,d){
+  if(timerRunning)return;
+  if(u==='hr'){selHr=Math.max(0,Math.min(24,selHr+d));if(selHr===24){selMin=0;selSec=0;}if(!selHr&&!selMin&&!selSec)selSec=5;}
+  else if(u==='min'){if(selHr===24)return;selMin=Math.max(0,Math.min(59,selMin+d));if(!selHr&&!selMin&&!selSec)selSec=5;}
+  else{if(selHr===24)return;let i=SEC5.indexOf(selSec)+d;if(i<0){if(selMin>0){selMin--;i=SEC5.length-1;}else if(selHr>0){selHr--;selMin=59;i=SEC5.length-1;}else i=0;}else if(i>=SEC5.length){if(selMin<59){selMin++;i=0;}else if(selHr<24){selHr++;selMin=0;i=0;}else i=SEC5.length-1;}selSec=SEC5[i];if(!selHr&&!selMin&&!selSec)selSec=5;}
+  updatePicker();
+}
+function updatePicker(){
+  document.getElementById('phr').textContent=pad(selHr);
+  document.getElementById('pmin').textContent=pad(selMin);
+  document.getElementById('psec').textContent=pad(selSec);
+  document.getElementById('metaDuration').textContent=pad(selHr)+':'+pad(selMin)+':'+pad(selSec);
+}
+updatePicker();
+
+/* ══ RECORDING BIN — config + helpers (v0.9.2) ══ */
+function setBins(v){
+  if(timerRunning||mtsRunning)return;
+  binsEnabled=v;
+  document.getElementById('bin-on').classList.toggle('active',v);
+  document.getElementById('bin-off').classList.toggle('active',!v);
+  updateBinUI();
+}
+function updateBinUI(){
+  const isMTS=(currentMode==='momentary');
+  // Interval-duration picker is hidden only for momentary-without-bins (bins give momentary a sampling interval)
+  document.getElementById('pickerCard').style.display=(isMTS&&!binsEnabled)?'none':'';
+  document.getElementById('recPicker').classList.toggle('hidden',!binsEnabled);
+}
+function doRecAdj(unit,d){
+  if(timerRunning||mtsRunning)return;
+  if(unit==='min'){recMin=Math.max(0,Math.min(59,recMin+d));}
+  else{let i=SEC5.indexOf(recSec)+d;if(i<0)i=0;if(i>=SEC5.length)i=SEC5.length-1;recSec=SEC5[i];}
+  if(recMin===0&&recSec===0)recSec=5;
+  recordSecs=recMin*60+recSec;
+  updateRecPicker();
+}
+function updateRecPicker(){
+  document.getElementById('recMinVal').textContent=pad(recMin);
+  document.getElementById('recSecVal').textContent=pad(recSec);
+}
+updateRecPicker();updateBinUI();
+
+/* ── Tabs ── */
+const tabIds=['interval','timers','stopwatch','summary'];
+let currentTabIndex=0;
+function switchTab(t){
+  const idx=tabIds.indexOf(t);if(idx<0)return;
+  currentTabIndex=idx;
+  document.getElementById('tabsTrack').style.transform=`translateX(-${idx*25}%)`;
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',i===idx));
+  if(t==='summary')renderSummary();
+}
+
+/* ── Swipe navigation ── */
+(function initSwipe(){
+  const track=document.getElementById('tabsTrack');
+  let startX=0,startY=0,deltaX=0,swiping=false,scrolling=false;
+  const LOCK=15,THRESHOLD=0.3;
+  track.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;startY=e.touches[0].clientY;
+    deltaX=0;swiping=false;scrolling=false;
+    track.classList.add('swiping');
+  },{passive:true});
+  track.addEventListener('touchmove',e=>{
+    const dx=e.touches[0].clientX-startX;
+    const dy=e.touches[0].clientY-startY;
+    if(!swiping&&!scrolling){
+      if(Math.abs(dx)>LOCK){swiping=true;}
+      else if(Math.abs(dy)>LOCK){scrolling=true;}
+      else return;
+    }
+    if(scrolling)return;
+    e.preventDefault();
+    deltaX=dx;
+    const viewW=track.parentElement.offsetWidth;
+    const base=-currentTabIndex*viewW;
+    track.style.transform=`translateX(${base+deltaX}px)`;
+  },{passive:false});
+  track.addEventListener('touchend',()=>{
+    track.classList.remove('swiping');
+    if(!swiping){switchTab(tabIds[currentTabIndex]);return;}
+    const viewW=track.parentElement.offsetWidth;
+    const thresh=viewW*THRESHOLD;
+    if(deltaX<-thresh&&currentTabIndex<tabIds.length-1)switchTab(tabIds[currentTabIndex+1]);
+    else if(deltaX>thresh&&currentTabIndex>0)switchTab(tabIds[currentTabIndex-1]);
+    else switchTab(tabIds[currentTabIndex]);
+  },{passive:true});
+})();
+
+/* ── Mode ── */
+const modeHints={
+  partial:'Mark if it happened — first tap = YES, keep tapping to count more occurrences',
+  whole:'Must be ON for the ENTIRE interval — any gap means NO for that interval',
+  momentary:'Spot-check: tap YES or NO at each observation moment — stopwatch tracks total duration'
+};
+function setMode(m){
+  if(timerRunning||mtsRunning)return;
+  currentMode=m;
+  ['partial','whole','momentary'].forEach(x=>document.getElementById('mt-'+x).classList.toggle('active',x===m));
+  document.getElementById('modeHint').textContent=modeHints[m];
+  // Show/hide picker card
+  const isMTS=(m==='momentary');
+  document.getElementById('timerWrap').style.display=isMTS?'none':'';
+  document.getElementById('mtsWrap').style.display=isMTS?'':'none';
+  document.getElementById('clickerArea').style.display=isMTS?'none':'flex';
+  document.getElementById('mtsYNArea').style.display=isMTS?'flex':'none';
+  updateBinUI();
+  renderModeUI();
+}
+function renderModeUI(){
+  const m=currentMode;
+  if(m==='momentary'){
+    document.getElementById('trackerTitle').textContent='Momentary Time Sampling';
+    document.getElementById('statDoneLabel').textContent='Total';
+    document.getElementById('pctLbl').textContent='0% YES';
+    updateMTSStats();
+  }else{
+    document.getElementById('trackerTitle').textContent=m==='partial'?'Partial Interval':'Whole Interval';
+    document.getElementById('statDoneLabel').textContent='Done';
+    const icon=document.getElementById('clickIcon'),sub=document.getElementById('clickSub');
+    if(m==='partial'){icon.textContent='TAP';icon.className='click-icon';sub.textContent='Tap if it occurred';}
+    else{icon.textContent='OFF';icon.className='click-icon';sub.textContent='Tap to activate';}
+    document.getElementById('tapBadge').className='tap-badge';
+    updateStats();
+  }
+}
+
+/* ── Stats (partial/whole) ── */
+function updateStats(){
+  const done=history.length;
+  const y=history.filter(h=>h.value===true).length;
+  const n=history.filter(h=>h.value===false).length;
+  document.getElementById('sYes').textContent=y;
+  document.getElementById('sNo').textContent=n;
+  document.getElementById('sDone').textContent=done;
+  const pct=done>0?Math.round(y/done*100):0;
+  document.getElementById('pctFill').style.width=pct+'%';
+  document.getElementById('pctLbl').textContent=pct+'% with occurrence';
+}
+
+/* ── Stats (momentary) ── */
+function updateMTSStats(){
+  const total=mtsHistory.length;
+  const y=mtsHistory.filter(h=>h.value==='yes').length;
+  const n=mtsHistory.filter(h=>h.value==='no').length;
+  document.getElementById('sYes').textContent=y;
+  document.getElementById('sNo').textContent=n;
+  document.getElementById('sDone').textContent=total;
+  const pct=total>0?Math.round(y/total*100):0;
+  document.getElementById('pctFill').style.width=pct+'%';
+  document.getElementById('pctLbl').textContent=pct+'% YES';
+}
+
+/* ── Momentary YES / NO handler ── */
+function handleMTSResponse(val,evt){
+  const yBtn=document.getElementById('mtsYesBtn');
+  const nBtn=document.getElementById('mtsNoBtn');
+  if(yBtn.classList.contains('disabled'))return;
+
+  // Ripple effect
+  const btn=val==='yes'?yBtn:nBtn;
+  const r=document.createElement('span');r.className='ripple';
+  const rect=btn.getBoundingClientRect();
+  const rx=evt?evt.clientX-rect.left:rect.width/2,ry=evt?evt.clientY-rect.top:rect.height/2;
+  const rs=Math.max(rect.width,rect.height)*2;
+  r.style.cssText=`width:${rs}px;height:${rs}px;left:${rx-rs/2}px;top:${ry-rs/2}px`;
+  btn.appendChild(r);setTimeout(()=>r.remove(),500);
+
+  const wt=nowWallClock();
+  mtsSeq++;
+  mtsHistory.unshift({value:val,wallTime:wt,seq:mtsSeq});
+  if(mtsHistory.length>120)mtsHistory.pop();
+
+  // Brief visual flash on tapped button
+  const flashClass=val==='yes'?'flash-yes':'flash-no';
+  btn.classList.add(flashClass);
+  setTimeout(()=>btn.classList.remove(flashClass),200);
+
+  updateMTSStats();
+  renderMTSHistory();
+
+  if(binsEnabled){
+    mtsAwaiting=false;
+    mtsSampleRemaining=mtsSampleSecs;
+    setMTSButtons(false);
+    updateMTSBinDisplay();
+  }
+}
+
+function renderMTSHistory(){
+  document.getElementById('mtsHistList').innerHTML=mtsHistory.map(e=>{
+    const isYes=(e.value==='yes');
+    return`<div class="hist-row ${isYes?'yes':'no'}">
+      <span class="hist-label">#${e.seq}</span>
+      <span style="display:flex;align-items:center;gap:4px;">
+        <span class="hist-val ${isYes?'amber':'red'}">${isYes?'YES':'NO'}</span>
+        <span class="hist-meta">${e.wallTime}</span>
+      </span>
+    </div>`;
+  }).join('');
+}
+
+/* ── MTS stopwatch controls ── */
+function setMTSButtons(on){
+  const yb=document.getElementById('mtsYesBtn'),nb=document.getElementById('mtsNoBtn');
+  if(on){yb.classList.remove('disabled');yb.classList.add('enabled');nb.classList.remove('disabled');nb.classList.add('enabled');}
+  else{yb.classList.add('disabled');yb.classList.remove('enabled');nb.classList.add('disabled');nb.classList.remove('enabled');}
+}
+function updateMTSBinDisplay(){
+  const t=document.getElementById('mtsTimer'),w=document.getElementById('mtsWrap');
+  if(mtsAwaiting){
+    t.textContent='NOW';t.classList.add('record');w.classList.add('record-phase');
+    document.getElementById('mtsNameDisplay').textContent='Sample now — tap YES or NO';
+  }else{
+    t.textContent=fmtTime(Math.max(mtsSampleRemaining,0));t.classList.remove('record');w.classList.remove('record-phase');
+    document.getElementById('mtsNameDisplay').textContent=document.getElementById('sessionName').value.trim();
+  }
+}
+function mtsBinTick(){
+  mtsElapsed=Date.now()-mtsStartBase;
+  if(!mtsAwaiting){
+    mtsSampleRemaining--;
+    if(mtsSampleRemaining<=0){mtsAwaiting=true;triggerAlert();setMTSButtons(true);}
+  }
+  updateMTSBinDisplay();
+}
+function startMTS(){
+  mtsRunning=true;
+  mtsStartBase=Date.now()-mtsElapsed;
+  if(!sessionStartTime)sessionStartTime=nowWallClock();
+  document.getElementById('mtsWrap').classList.add('running');
+  document.getElementById('mtsTimer').classList.add('running');
+  document.getElementById('mtsNameDisplay').textContent=document.getElementById('sessionName').value.trim();
+  document.getElementById('endBtn').classList.add('active');
+  if(binsEnabled){
+    if(!mtsBinInit){
+      mtsSampleSecs=selHr*3600+selMin*60+selSec;if(mtsSampleSecs<5)mtsSampleSecs=5;
+      mtsSampleRemaining=mtsSampleSecs;mtsAwaiting=false;mtsBinInit=true;
+    }
+    setMTSButtons(mtsAwaiting);
+    updateMTSBinDisplay();
+    mtsTick=setInterval(mtsBinTick,1000);
+  }else{
+    // Enable YES/NO buttons
+    const yb=document.getElementById('mtsYesBtn'),nb=document.getElementById('mtsNoBtn');
+    yb.classList.remove('disabled');yb.classList.add('enabled');
+    nb.classList.remove('disabled');nb.classList.add('enabled');
+    // Start tick
+    mtsTick=setInterval(()=>{
+      mtsElapsed=Date.now()-mtsStartBase;
+      document.getElementById('mtsTimer').textContent=fmtElapsedHHMMSS(mtsElapsed);
+    },500);
+  }
+  const sb=document.getElementById('startBtn');sb.textContent='Pause';sb.className='btn-main stop';
+  document.getElementById('modeCard').style.opacity='0.45';document.getElementById('modeCard').style.pointerEvents='none';
+  acquireWakeLock();
+}
+function pauseMTS(){
+  mtsRunning=false;
+  clearInterval(mtsTick);
+  document.getElementById('mtsWrap').classList.remove('running');
+  document.getElementById('mtsTimer').classList.remove('running');
+  const sb=document.getElementById('startBtn');sb.textContent='Resume';sb.className='btn-main paused';
+}
+function resetMTSState(){
+  releaseWakeLock();
+  clearInterval(mtsTick);mtsRunning=false;mtsElapsed=0;mtsStartBase=0;
+  mtsHistory=[];mtsSeq=0;
+  mtsSampleSecs=0;mtsSampleRemaining=0;mtsAwaiting=false;mtsBinInit=false;
+  sessionStartTime=null;sessionEndTime=null;
+  document.getElementById('mtsTimer').textContent='00:00:00';
+  document.getElementById('mtsTimer').className='mts-time';
+  document.getElementById('mtsWrap').classList.remove('running');
+  document.getElementById('mtsWrap').classList.remove('record-phase');
+  document.getElementById('mtsNameDisplay').textContent='';
+  document.getElementById('startBtn').textContent='Start';document.getElementById('startBtn').className='btn-main';
+  document.getElementById('endBtn').classList.remove('active');
+  document.getElementById('modeCard').style.opacity='';document.getElementById('modeCard').style.pointerEvents='';
+  const yb=document.getElementById('mtsYesBtn'),nb=document.getElementById('mtsNoBtn');
+  yb.classList.add('disabled');yb.classList.remove('enabled');
+  nb.classList.add('disabled');nb.classList.remove('enabled');
+  renderMTSHistory();
+  updateMTSStats();
+}
+
+/* ── Unified Start / Reset handlers (routes by mode) ── */
+function handleStart(){
+  if(currentMode==='momentary'){
+    mtsRunning?pauseMTS():startMTS();
+  }else{
+    timerRunning?pauseTimer():startTimer();
+  }
+}
+function handleReset(){
+  if(currentMode==='momentary'){
+    resetMTSState();
+  }else{
+    resetTimer();
+  }
+}
+
+/* ── Partial / Whole clicker ── */
+function handleClick(evt){
+  const btn=document.getElementById('clickBtn');
+  if(btn.classList.contains('disabled'))return;
+  const r=document.createElement('span');r.className='ripple';
+  const rect=btn.getBoundingClientRect();
+  const rx=evt?evt.clientX-rect.left:rect.width/2,ry=evt?evt.clientY-rect.top:rect.height/2;
+  const rs=Math.max(rect.width,rect.height)*2;
+  r.style.cssText=`width:${rs}px;height:${rs}px;left:${rx-rs/2}px;top:${ry-rs/2}px`;
+  btn.appendChild(r);setTimeout(()=>r.remove(),500);
+
+  if(currentMode==='partial'){
+    partialTaps++;
+    const badge=document.getElementById('tapBadge');
+    badge.textContent=partialTaps;badge.className='tap-badge show';
+    if(partialTaps===1){
+      btn.classList.add('yes-state');
+      document.getElementById('clickIcon').textContent='YES';
+      document.getElementById('clickIcon').className='click-icon amber';
+      document.getElementById('clickSub').textContent='Tap again to add count';
+    }else{
+      document.getElementById('clickSub').textContent=partialTaps+' taps this interval';
+    }
+  }else{
+    if(wholeInvalidated){
+      wholeActive=!wholeActive;
+      document.getElementById('clickIcon').textContent=wholeActive?'ON':'OFF';
+      document.getElementById('clickIcon').className='click-icon red';
+      document.getElementById('clickSub').textContent='Already invalidated — NO';
+      btn.className='click-btn invalid-state';
+      return;
+    }
+    wholeActive=!wholeActive;
+    if(wholeActive){
+      if(elapsedInInt>0&&!wholeWasOnAtStart){
+        wholeInvalidated=true;wholeQualified=false;
+        btn.className='click-btn invalid-state';
+        document.getElementById('clickIcon').textContent='ON';
+        document.getElementById('clickIcon').className='click-icon red';
+        document.getElementById('clickSub').textContent='Started mid-interval — NO';
+      }else{
+        btn.classList.remove('invalid-state');btn.classList.add('on-state');
+        document.getElementById('clickIcon').textContent='ON';
+        document.getElementById('clickIcon').className='click-icon amber';
+        document.getElementById('clickSub').textContent='Active — stay ON all interval';
+      }
+    }else{
+      wholeInvalidated=true;wholeQualified=false;
+      btn.className='click-btn invalid-state';
+      document.getElementById('clickIcon').textContent='OFF';
+      document.getElementById('clickIcon').className='click-icon red';
+      document.getElementById('clickSub').textContent='Turned off — interval is NO';
+    }
+  }
+}
+
+/* ── Whole interval per-second eval ── */
+function wholeIntervalTick(){
+  if(elapsedInInt===1){
+    wholeWasOnAtStart=wholeActive;
+    if(!wholeActive){
+      wholeInvalidated=true;wholeQualified=false;
+      const btn=document.getElementById('clickBtn');
+      btn.className='click-btn invalid-state';
+      document.getElementById('clickIcon').textContent='OFF';
+      document.getElementById('clickIcon').className='click-icon red';
+      document.getElementById('clickSub').textContent='Was OFF at start — NO';
+    }else{
+      wholeQualified=true;
+    }
+  }
+}
+
+/* ── Interval end (partial/whole) ── */
+function onIntervalEnd(){
+  const m=currentMode;
+  const startTime=fmtHHMMSS(currentIntervalStart);
+  let entry={num:intervalCount,mode:m,startTime};
+  if(m==='partial'){
+    entry.value=(partialTaps>0);entry.taps=partialTaps;
+    partialTaps=0;
+    const btn=document.getElementById('clickBtn');
+    btn.classList.remove('yes-state');
+    document.getElementById('clickIcon').textContent='TAP';
+    document.getElementById('clickIcon').className='click-icon';
+    document.getElementById('clickSub').textContent='Tap if it occurred';
+    document.getElementById('tapBadge').className='tap-badge';
+  }else{
+    const wasYes=wholeQualified&&!wholeInvalidated&&wholeActive;
+    entry.value=wasYes;entry.taps=null;
+    const carry=wholeActive;
+    wholeInvalidated=false;wholeQualified=false;wholeWasOnAtStart=carry;
+    if(binsEnabled)carryState=carry;
+    const btn=document.getElementById('clickBtn');
+    if(carry){
+      btn.className='click-btn on-state';
+      document.getElementById('clickIcon').textContent='ON';
+      document.getElementById('clickIcon').className='click-icon amber';
+      document.getElementById('clickSub').textContent='Active — stay ON all interval';
+    }else{
+      btn.className='click-btn';
+      document.getElementById('clickIcon').textContent='OFF';
+      document.getElementById('clickIcon').className='click-icon';
+      document.getElementById('clickSub').textContent='Tap to activate';
+    }
+  }
+  history.unshift(entry);if(history.length>60)history.pop();
+  updateStats();renderHistory();
+}
+
+function renderHistory(){
+  document.getElementById('histList').innerHTML=history.map(e=>{
+    const tapMeta=(e.mode==='partial'&&e.value&&e.taps>0)?`<span class="hist-meta">(${e.taps} tap${e.taps!==1?'s':''})</span>`:'';
+    return`<div class="hist-row ${e.value?'yes':'no'}"><span class="hist-label">Int. ${e.num}</span><span style="display:flex;align-items:center;gap:4px;"><span class="hist-val ${e.value?'amber':'red'}">${e.value?'YES':'NO'}</span>${tapMeta}</span></div>`;
+  }).join('');
+}
+
+/* ══ RECORDING BIN — record phase (partial/whole) ══ */
+/* Editor binds to history[0] — the interval that just ended. Edits commit live. */
+function renderBinEditor(){
+  const ed=document.getElementById('binEditor');
+  const e=history[0];
+  if(!e){ed.innerHTML='';return;}
+  if(e.mode==='partial'){
+    const taps=e.taps||0,isYes=taps>0;
+    ed.innerHTML=`
+      <div class="bin-editor-title">Record · Interval ${e.num}</div>
+      <div class="bin-editor-sub">Adjust the count for the interval that just ended</div>
+      <div class="bin-count-row">
+        <button class="bin-step-btn minus" onclick="binAdjust(-1)">−</button>
+        <div class="bin-count-val" id="binCountVal">${taps}</div>
+        <button class="bin-step-btn plus" onclick="binAdjust(1)">+</button>
+      </div>
+      <div class="bin-derived ${isYes?'yes':'no'}" id="binDerived">${isYes?'YES · occurrence':'NO · no occurrence'}</div>`;
+  }else{
+    const isYes=(e.value===true);
+    ed.innerHTML=`
+      <div class="bin-editor-title">Record · Interval ${e.num}</div>
+      <div class="bin-editor-sub">Confirm or correct the interval that just ended</div>
+      <div class="bin-yn-row">
+        <button class="bin-yn-btn yes ${isYes?'sel':''}" id="binWholeYes" onclick="binSetWhole(true)">YES</button>
+        <button class="bin-yn-btn no ${!isYes?'sel':''}" id="binWholeNo" onclick="binSetWhole(false)">NO</button>
+      </div>
+      <div class="carry-tab" id="carryTab">
+        <span class="carry-tab-lbl">Next interval starts</span>
+        <div class="carry-tab-pill">
+          <button class="carry-opt yes ${carryState?'sel':''}" id="carryYes" onclick="setCarry(true)">YES</button>
+          <button class="carry-opt no ${!carryState?'sel':''}" id="carryNo" onclick="setCarry(false)">NO</button>
+        </div>
+      </div>`;
+  }
+}
+function binAdjust(d){
+  const e=history[0];
+  if(!e||e.mode!=='partial')return;
+  e.taps=Math.max(0,(e.taps||0)+d);
+  e.value=e.taps>0;
+  const cv=document.getElementById('binCountVal');if(cv)cv.textContent=e.taps;
+  const dv=document.getElementById('binDerived');
+  if(dv){dv.className='bin-derived '+(e.value?'yes':'no');dv.textContent=e.value?'YES · occurrence':'NO · no occurrence';}
+  updateStats();renderHistory();
+}
+function binSetWhole(v){
+  const e=history[0];
+  if(!e||e.mode==='partial')return;
+  e.value=v;
+  const y=document.getElementById('binWholeYes'),n=document.getElementById('binWholeNo');
+  if(y)y.classList.toggle('sel',v);
+  if(n)n.classList.toggle('sel',!v);
+  updateStats();renderHistory();
+}
+function setCarry(v){
+  carryState=v;
+  const y=document.getElementById('carryYes'),n=document.getElementById('carryNo');
+  if(y)y.classList.toggle('sel',v);
+  if(n)n.classList.toggle('sel',!v);
+}
+function enterRecordBin(){
+  binPhase='record';
+  recordRemaining=recordSecs;
+  binWarningFired=false;
+  document.getElementById('timerWrap').classList.add('record-phase');
+  document.getElementById('clickBtn').style.display='none';
+  document.getElementById('binEditor').classList.add('show');
+  renderBinEditor();
+  const disp=document.getElementById('bigTimer');
+  disp.className='big-timer record';
+  disp.textContent=fmtTime(recordRemaining);
+  disp.classList.toggle('compact',disp.textContent.length>5);
+  document.getElementById('progFill').style.width='0%';
+  // Short windows: fire the resume warning immediately so it never gets clipped
+  if(recordSecs<=3){
+    binWarningFired=true;triggerAlert();
+    const ct=document.getElementById('carryTab');if(ct)ct.classList.add('warn');
+  }
+}
+function exitRecordBin(){
+  binPhase='observe';
+  document.getElementById('timerWrap').classList.remove('record-phase');
+  document.getElementById('binEditor').classList.remove('show');
+  document.getElementById('clickBtn').style.display='';
+  intervalCount++;elapsedInInt=0;
+  currentIntervalStart=new Date();
+  document.getElementById('metaInterval').textContent=intervalCount;
+  const disp=document.getElementById('bigTimer');
+  disp.className='big-timer running';
+  disp.textContent=fmtTime(intervalSecs);
+  disp.classList.toggle('compact',disp.textContent.length>5);
+  const fill=document.getElementById('progFill');
+  fill.style.width='0%';fill.className='prog-fill';
+  if(currentMode==='whole'){
+    // Carry tab determines the starting on/off state of the new interval
+    wholeActive=carryState;
+    wholeInvalidated=false;wholeQualified=false;wholeWasOnAtStart=carryState;
+    const btn=document.getElementById('clickBtn');
+    if(carryState){
+      btn.className='click-btn on-state';
+      document.getElementById('clickIcon').textContent='ON';
+      document.getElementById('clickIcon').className='click-icon amber';
+      document.getElementById('clickSub').textContent='Active — stay ON all interval';
+    }else{
+      btn.className='click-btn';
+      document.getElementById('clickIcon').textContent='OFF';
+      document.getElementById('clickIcon').className='click-icon';
+      document.getElementById('clickSub').textContent='Tap to activate';
+    }
+  }
+}
+
+/* ── Timer controls (partial/whole) ── */
+function toggleTimer(){timerRunning?pauseTimer():startTimer();}
+function startTimer(){
+  if(binsEnabled&&binPhase==='record'){
+    // Resuming inside a record bin — restart the tick only, keep editor state intact
+    timerRunning=true;
+    const sb=document.getElementById('startBtn');sb.textContent='Pause';sb.className='btn-main stop';
+    timerTick=setInterval(tick,1000);
+    acquireWakeLock();
+    return;
+  }
+  intervalSecs=selHr*3600+selMin*60+selSec;if(intervalSecs<5)intervalSecs=5;
+  timerRunning=true;
+  const sb=document.getElementById('startBtn');sb.textContent='Pause';sb.className='btn-main stop';
+  document.getElementById('endBtn').classList.add('active');
+  document.getElementById('timerWrap').classList.add('running');
+  document.getElementById('modeCard').style.opacity='0.45';document.getElementById('modeCard').style.pointerEvents='none';
+  document.getElementById('pickerCard').style.opacity='0.45';document.getElementById('pickerCard').style.pointerEvents='none';
+  document.getElementById('clickBtn').classList.remove('disabled');
+  document.getElementById('sessionNameDisplay').textContent=document.getElementById('sessionName').value.trim();
+  if(intervalCount===0){
+    intervalCount=1;
+    currentIntervalStart=new Date();
+    if(!sessionStartTime)sessionStartTime=nowWallClock();
+    wholeWasOnAtStart=wholeActive;
+    wholeInvalidated=false;wholeQualified=false;
+  }
+  document.getElementById('metaInterval').textContent=intervalCount;
+  timerTick=setInterval(tick,1000);
+  acquireWakeLock();
+}
+function pauseTimer(){
+  timerRunning=false;clearInterval(timerTick);
+  const sb=document.getElementById('startBtn');sb.textContent='Resume';sb.className='btn-main paused';
+  document.getElementById('timerWrap').classList.remove('running');
+}
+function tick(){
+  if(binsEnabled&&binPhase==='record'){
+    recordRemaining--;
+    if(recordRemaining<=0){exitRecordBin();return;}
+    if(!binWarningFired&&recordRemaining<=3){
+      binWarningFired=true;triggerAlert();
+      const ct=document.getElementById('carryTab');if(ct)ct.classList.add('warn');
+    }
+    const rdisp=document.getElementById('bigTimer');
+    rdisp.textContent=fmtTime(recordRemaining);
+    rdisp.classList.toggle('compact',rdisp.textContent.length>5);
+    return;
+  }
+  elapsedInInt++;totalElapsed++;
+  if(currentMode==='whole')wholeIntervalTick();
+  const rem=intervalSecs-elapsedInInt;
+  const pct=elapsedInInt/intervalSecs*100;
+  const disp=document.getElementById('bigTimer'),fill=document.getElementById('progFill');
+  const ts=fmtTime(Math.max(rem,0));
+  disp.textContent=ts;disp.classList.toggle('compact',ts.length>5);
+  document.getElementById('metaTotal').textContent=fmtTime(totalElapsed);
+  fill.style.width=Math.min(pct,100)+'%';
+  const fin=rem<=5&&rem>0;
+  disp.classList.toggle('finishing',fin);disp.classList.toggle('running',!fin);fill.classList.toggle('finishing',fin);
+  if(elapsedInInt>=intervalSecs){
+    triggerAlert();onIntervalEnd();
+    if(binsEnabled){
+      elapsedInInt=0;        // observe interval already scored; prevents End re-scoring
+      enterRecordBin();
+      return;
+    }
+    intervalCount++;elapsedInInt=0;
+    currentIntervalStart=new Date();
+    document.getElementById('metaInterval').textContent=intervalCount;
+    fill.style.width='0%';disp.classList.remove('finishing');disp.classList.add('running');fill.classList.remove('finishing');
+  }
+}
+function resetTimer(){
+  releaseWakeLock();
+  clearInterval(timerTick);timerRunning=false;
+  elapsedInInt=0;totalElapsed=0;intervalCount=0;currentIntervalStart=null;
+  partialTaps=0;wholeActive=false;wholeQualified=false;wholeInvalidated=false;wholeWasOnAtStart=false;
+  binPhase='observe';recordRemaining=0;binWarningFired=false;carryState=false;
+  document.getElementById('timerWrap').classList.remove('record-phase');
+  document.getElementById('binEditor').classList.remove('show');
+  document.getElementById('clickBtn').style.display='';
+  sessionStartTime=null;sessionEndTime=null;
+  document.getElementById('startBtn').textContent='Start';document.getElementById('startBtn').className='btn-main';
+  document.getElementById('endBtn').classList.remove('active');
+  document.getElementById('bigTimer').textContent='00:00';document.getElementById('bigTimer').className='big-timer';
+  document.getElementById('progFill').style.width='0%';document.getElementById('progFill').className='prog-fill';
+  document.getElementById('metaInterval').textContent='0';document.getElementById('metaTotal').textContent='00:00';
+  document.getElementById('timerWrap').classList.remove('running');
+  document.getElementById('modeCard').style.opacity='';document.getElementById('modeCard').style.pointerEvents='';
+  document.getElementById('pickerCard').style.opacity='';document.getElementById('pickerCard').style.pointerEvents='';
+  const cb=document.getElementById('clickBtn');cb.className='click-btn disabled';
+  document.getElementById('clickIcon').textContent='TAP';document.getElementById('clickIcon').className='click-icon';
+  document.getElementById('clickSub').textContent='Start to enable';
+  document.getElementById('tapBadge').className='tap-badge';
+  history=[];renderHistory();renderModeUI();
+}
+
+/* ── End session (all modes) ── */
+function endSession(){
+  if(!document.getElementById('endBtn').classList.contains('active'))return;
+  releaseWakeLock();
+  sessionEndTime=nowWallClock();
+  if(currentMode==='momentary'){
+    clearInterval(mtsTick);mtsRunning=false;
+    commitSession();
+    resetMTSState();
+  }else{
+    if(elapsedInInt>0){onIntervalEnd();intervalCount++;}
+    clearInterval(timerTick);timerRunning=false;
+    commitSession();
+    elapsedInInt=0;totalElapsed=0;intervalCount=0;currentIntervalStart=null;
+    partialTaps=0;wholeActive=false;wholeQualified=false;wholeInvalidated=false;wholeWasOnAtStart=false;
+    binPhase='observe';recordRemaining=0;binWarningFired=false;carryState=false;
+    document.getElementById('timerWrap').classList.remove('record-phase');
+    document.getElementById('binEditor').classList.remove('show');
+    document.getElementById('clickBtn').style.display='';
+    sessionStartTime=null;sessionEndTime=null;
+    history=[];
+    document.getElementById('startBtn').textContent='Start';document.getElementById('startBtn').className='btn-main';
+    document.getElementById('endBtn').classList.remove('active');
+    document.getElementById('bigTimer').textContent='00:00';document.getElementById('bigTimer').className='big-timer';
+    document.getElementById('progFill').style.width='0%';document.getElementById('progFill').className='prog-fill';
+    document.getElementById('metaInterval').textContent='0';document.getElementById('metaTotal').textContent='00:00';
+    document.getElementById('timerWrap').classList.remove('running');
+    document.getElementById('modeCard').style.opacity='';document.getElementById('modeCard').style.pointerEvents='';
+    document.getElementById('pickerCard').style.opacity='';document.getElementById('pickerCard').style.pointerEvents='';
+    const cb=document.getElementById('clickBtn');cb.className='click-btn disabled';
+    document.getElementById('clickIcon').textContent='TAP';document.getElementById('clickIcon').className='click-icon';
+    document.getElementById('clickSub').textContent='Start to enable';
+    document.getElementById('tapBadge').className='tap-badge';
+    renderHistory();renderModeUI();
+  }
+  switchTab('summary');
+}
+
+/* ── Commit session to sessions array ── */
+function commitSession(){
+  const name=document.getElementById('sessionName').value.trim()||'Session '+(sessions.length+1);
+  const m=currentMode;
+  const sessionDate=new Date().toLocaleDateString();
+  const sStart=sessionStartTime||'';
+  const sEnd=sessionEndTime||'';
+  if(m==='momentary'){
+    const total=mtsHistory.length;
+    const yesCount=mtsHistory.filter(h=>h.value==='yes').length;
+    const noCount=mtsHistory.filter(h=>h.value==='no').length;
+    const pct=total>0?Math.round(yesCount/total*100):0;
+    const durMs=mtsElapsed;
+    const s={
+      name,mode:'momentary',
+      date:sessionDate,
+      startTime:sStart,
+      endTime:sEnd,
+      totalElapsed:fmtElapsedHHMMSS(durMs),
+      intervals:total,
+      yes:yesCount,no:noCount,pct,
+      mtsDetail:[...mtsHistory].reverse()
+    };
+    if(binsEnabled){s.binsEnabled=true;s.observeSecs=mtsSampleSecs;s.recordSecs=recordSecs;}
+    sessions.unshift(s);
+  }else{
+    const done=history.length;
+    const yesItems=history.filter(h=>h.value===true);
+    const yesCount=yesItems.length,noCount=history.filter(h=>h.value===false).length;
+    const pct=done>0?Math.round(yesCount/done*100):0;
+    let s={name,mode:m,date:sessionDate,startTime:sStart,endTime:sEnd,intervals:done,totalElapsed:fmtTime(totalElapsed),yes:yesCount,no:noCount,pct};
+    if(m==='partial'){
+      const tapSum=yesItems.reduce((a,b)=>a+(b.taps||0),0);
+      s.totalTaps=tapSum;s.avgTapsPerYes=yesCount>0?(tapSum/yesCount).toFixed(1):null;
+      s.intervalDetail=history.map(e=>({num:e.num,startTime:e.startTime,value:e.value,taps:e.taps})).reverse();
+    }else{
+      s.intervalDetail=history.map(e=>({num:e.num,startTime:e.startTime,value:e.value})).reverse();
+    }
+    if(binsEnabled){s.binsEnabled=true;s.observeSecs=intervalSecs;s.recordSecs=recordSecs;}
+    sessions.unshift(s);
+  }
+}
+
+/* ── Summary list ── */
+function renderSummary(){
+  const body=document.getElementById('summaryBody');
+  if(!sessions.length){body.innerHTML='<div class="summary-empty">No sessions saved yet</div>';return;}
+  body.innerHTML='<div class="sess-list">'+sessions.map((s,i)=>`
+    <div class="sess-row" onclick="openDetail(${i})">
+      <div class="sess-row-left">
+        <div class="sess-row-name">${s.name}</div>
+        <div class="sess-row-meta">
+          <span class="sess-row-date">${s.date}</span>
+          <span class="sess-row-mode">${s.mode}</span>
+        </div>
+      </div>
+      <div class="sess-row-chevron"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div>`).join('')+'</div>';
+}
+function clearSummaries(){if(sessions.length&&confirm('Clear all saved sessions?')){sessions=[];renderSummary();}}
+
+/* ── Session detail ── */
+let openSessionIndex=null;
+function openDetail(i){
+  openSessionIndex=i;
+  const s=sessions[i];
+  document.getElementById('detailTitle').textContent=s.name;
+  renderDetailBody(s);
+  document.getElementById('detailPanel').classList.add('open');
+  window.scrollTo(0,0);
+}
+function closeDetail(){
+  document.getElementById('detailPanel').classList.remove('open');
+  openSessionIndex=null;
+}
+function renderDetailBody(s){
+  let html=`<div class="sum-card"><div class="sum-head"><span class="sum-name">${s.name}</span><span class="sum-mode">${s.mode}</span></div><div class="sum-body">
+    <div class="sum-row"><span class="sum-row-l">Date</span><span class="sum-row-v">${s.date}</span></div>
+    <div class="sum-row"><span class="sum-row-l">Start time</span><span class="sum-row-v">${s.startTime||'—'}</span></div>
+    <div class="sum-row"><span class="sum-row-l">End time</span><span class="sum-row-v">${s.endTime||'—'}</span></div>
+    <div class="sum-row"><span class="sum-row-l">Duration run</span><span class="sum-row-v">${s.totalElapsed}</span></div>${s.binsEnabled?`
+    <div class="sum-row"><span class="sum-row-l">Recording bin</span><span class="sum-row-v">${fmtTime(s.observeSecs??0)} obs · ${fmtTime(s.recordSecs??0)} rec</span></div>`:''}`;
+
+  if(s.mode==='timer'){
+    html+=`<div class="sum-divider"></div>
+    <div class="freq-stats">
+      <div class="freq-stat-cell inc-cell">
+        <span class="freq-stat-n inc">${s.incorrect}</span>
+        <span class="freq-stat-lbl">Incorrect</span>
+      </div>
+      <div class="freq-stat-cell cor-cell">
+        <span class="freq-stat-n cor">${s.correct}</span>
+        <span class="freq-stat-lbl">Correct</span>
+      </div>
+    </div>
+    <div class="sum-row" style="margin-top:8px;"><span class="sum-row-l">Total responses</span><span class="sum-row-v">${s.total}</span></div>
+    <div class="sum-row"><span class="sum-row-l">Correct rate</span><span class="sum-row-v" style="color:var(--green)">${s.pct}%</span></div>`;
+  }else if(s.mode==='stopwatch'){
+    html+=`<div class="sum-divider"></div>
+    <div class="freq-stats">
+      <div class="freq-stat-cell inc-cell">
+        <span class="freq-stat-n inc">${s.incorrect}</span>
+        <span class="freq-stat-lbl">Incorrect</span>
+      </div>
+      <div class="freq-stat-cell cor-cell">
+        <span class="freq-stat-n cor">${s.correct}</span>
+        <span class="freq-stat-lbl">Correct</span>
+      </div>
+    </div>
+    <div class="sum-row" style="margin-top:8px;"><span class="sum-row-l">Total responses</span><span class="sum-row-v">${s.total}</span></div>
+    <div class="sum-row"><span class="sum-row-l">Correct rate</span><span class="sum-row-v" style="color:var(--green)">${s.pct}%</span></div>
+    <div class="sum-row"><span class="sum-row-l">Laps recorded</span><span class="sum-row-v">${s.lapCount}</span></div>`;
+    if(s.laps&&s.laps.length){
+      html+='<div class="sum-divider"></div><div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:4px 0 6px;">Lap Log</div>';
+      html+=s.laps.map(e=>{
+        const c=e.correct??0, inc=e.incorrect??0;
+        return`<div class="sum-int-row">
+          <span class="sum-int-l">Lap ${e.num} <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);">${e.time}</span></span>
+          <span style="display:flex;gap:10px;align-items:center;">
+            <span class="sum-int-v" style="color:var(--green)">${c}&nbsp;C</span>
+            <span class="sum-int-v" style="color:var(--red-b)">${inc}&nbsp;I</span>
+          </span>
+        </div>`;
+      }).join('');
+      /* Trailing responses — logged after the last lap marker but before End */
+      const tc=(s.trailingCorrect||0), ti=(s.trailingIncorrect||0);
+      if(tc+ti>0){
+        html+=`<div class="sum-int-row" style="border-left:3px solid var(--text3);opacity:0.75;">
+          <span class="sum-int-l" style="font-style:italic;">${tc+ti} additional after Lap ${s.lapCount}</span>
+          <span style="display:flex;gap:10px;align-items:center;">
+            <span class="sum-int-v" style="color:var(--green)">${tc}&nbsp;C</span>
+            <span class="sum-int-v" style="color:var(--red-b)">${ti}&nbsp;I</span>
+          </span>
+        </div>`;
+      }
+    }
+  }else if(s.mode==='momentary'){
+    html+=`
+    <div class="sum-row"><span class="sum-row-l">Total observations</span><span class="sum-row-v">${s.intervals}</span></div>
+    <div class="sum-row"><span class="sum-row-l">YES responses</span><span class="sum-row-v">${s.yes}</span></div>
+    <div class="sum-row"><span class="sum-row-l">NO responses</span><span class="sum-row-v">${s.no}</span></div>
+    <div class="sum-row"><span class="sum-row-l">YES rate</span><span class="sum-row-v">${s.pct}%</span></div>`;
+    if(s.mtsDetail&&s.mtsDetail.length){
+      html+='<div class="sum-divider"></div><div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:4px 0 6px;">Observation Log</div>';
+      html+=s.mtsDetail.map(e=>{
+        const isYes=(e.value==='yes');
+        return`<div class="sum-int-row">
+          <span class="sum-int-l">#${e.seq} <span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);">${e.wallTime}</span></span>
+          <span class="sum-int-v ${isYes?'amber':'red'}">${isYes?'YES':'NO'}</span>
+        </div>`;
+      }).join('');
+    }
+  }else{
+    html+=`
+    <div class="sum-row"><span class="sum-row-l">Intervals completed</span><span class="sum-row-v">${s.intervals}</span></div>
+    <div class="sum-row"><span class="sum-row-l">YES intervals</span><span class="sum-row-v">${s.yes}</span></div>
+    <div class="sum-row"><span class="sum-row-l">NO intervals</span><span class="sum-row-v">${s.no}</span></div>
+    <div class="sum-row"><span class="sum-row-l">Occurrence rate</span><span class="sum-row-v">${s.pct}%</span></div>`;
+    if(s.mode==='partial'&&s.avgTapsPerYes!==null){
+      html+=`<div class="sum-row"><span class="sum-row-l">Total taps (YES intervals)</span><span class="sum-row-v">${s.totalTaps}</span></div>
+             <div class="sum-row"><span class="sum-row-l">Avg taps per YES interval</span><span class="sum-row-v">${s.avgTapsPerYes}</span></div>`;
+    }
+    if(s.intervalDetail&&s.intervalDetail.length){
+      html+='<div class="sum-divider"></div><div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:4px 0 6px;">Interval Detail</div>';
+      html+=s.intervalDetail.map(e=>{
+        const tn=s.mode==='partial'&&e.value&&e.taps?` · ${e.taps} tap${e.taps!==1?'s':''}`:'';
+        const ts=e.startTime?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);margin-left:6px;">${e.startTime}</span>`:'';
+        return`<div class="sum-int-row"><span class="sum-int-l">Int. ${e.num}${ts}</span><span class="sum-int-v ${e.value?'amber':'red'}">${e.value?'YES':'NO'}${tn}</span></div>`;
+      }).join('');
+    }
+  }
+  html+='</div></div>';
+  document.getElementById('detailBody').innerHTML=html;
+}
+
+/* ── Confirm delete ── */
+/* (confirm/delete handled in GENERALIZED DELETE CONFIRM block) */
+
+/* ── CSV export ── */
+function exportSessionCSV(){
+  if(openSessionIndex===null)return;
+  const s=sessions[openSessionIndex];
+  const toCSV=r=>r.map(v=>{const sv=String(v??'');return sv.includes(',')||sv.includes('"')?'"'+sv.replace(/"/g,'""')+'"':sv;}).join(',');
+
+  /*
+    Layout for all modes:
+    Summary header  → row 1, columns A onward
+    Summary values  → row 2, columns A onward
+    Detail header   → row 1, starting at a fixed column clear of the widest summary
+    Detail rows     → rows 2+, same column block
+
+    Column layout (0-indexed arrays, A=0):
+      A=Target, B=Mode, C=Date, D=Start Time, E=End Time,
+      F=Duration/Total Elapsed,
+      G=YES, H=NO, I=Occurrence%/YES Rate,
+      J=Intervals (partial/whole) or Observations (momentary),
+      K=Total Taps (partial only), L=Avg Taps/YES (partial only)
+
+    Detail block start column:
+      partial   → col 12 (M)  — because summary uses A-L (12 cols)
+      whole     → col 10 (K)  — summary uses A-J (10 cols)
+      momentary → col 10 (K)  — summary uses A-J (10 cols)
+    We use a fixed offset of 12 (col M) for all modes so exports are
+    consistent and always leave room. Empty cells pad the gap.
+  */
+
+  const DETAIL_COL = 12; // col M (0-indexed), same for all modes
+  const emptyBefore = (n) => Array(n).fill('');
+
+  // Build rows as sparse arrays — index = column position
+  const row1 = [];
+  const row2 = [];
+
+  if(s.mode==='timer'){
+    /* Timer sessions: simple single-row summary, no interval detail block */
+    const headers=['Target','Mode','Date','Start Time','End Time','Duration Run','Correct','Incorrect','Total Responses','Correct Rate'];
+    const values=[s.name,'Timer',s.date,s.startTime,s.endTime,s.totalElapsed,s.correct,s.incorrect,s.total,s.pct+'%'];
+    const csv=[toCSV(headers),toCSV(values)].join('\n');
+    const a=document.createElement('a');
+    a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+    const safeName=s.name.replace(/[^a-z0-9]/gi,'_').substring(0,30);
+    const ts=new Date().toISOString().slice(0,10);
+    a.download=`DataTrack_${safeName}_${ts}.csv`;a.click();
+    return;
+  }
+
+  if(s.mode==='stopwatch'){
+    // Summary cols A-K (11 cols), detail block at col M (12) if laps exist
+    row1[0]='Target';        row2[0]=s.name;
+    row1[1]='Mode';          row2[1]='Stopwatch';
+    row1[2]='Date';          row2[2]=s.date;
+    row1[3]='Start Time';    row2[3]=s.startTime;
+    row1[4]='End Time';      row2[4]=s.endTime;
+    row1[5]='Duration';      row2[5]=s.totalElapsed;
+    row1[6]='Correct';       row2[6]=s.correct;
+    row1[7]='Incorrect';     row2[7]=s.incorrect;
+    row1[8]='Total';         row2[8]=s.total;
+    row1[9]='Correct Rate';  row2[9]=s.pct+'%';
+    row1[10]='Laps';         row2[10]=s.lapCount;
+    /* Per-lap detail block: Lap #, Lap Time, Correct, Incorrect */
+    const lapData=(s.laps||[]).map(e=>[e.num, e.time, e.correct??0, e.incorrect??0]);
+    const hasTrailCSV=(s.trailingCorrect||0)+(s.trailingIncorrect||0)>0;
+    if(lapData.length){
+      row1[DETAIL_COL]='Lap #';
+      row1[DETAIL_COL+1]='Lap Time';
+      row1[DETAIL_COL+2]='Correct';
+      row1[DETAIL_COL+3]='Incorrect';
+    }
+    const swTotalCols=lapData.length?(DETAIL_COL+4):11;
+    const swDense=(row)=>{const out=[];for(let i=0;i<swTotalCols;i++)out.push(row[i]!==undefined?row[i]:'');return out;};
+    const swRows=[];
+    swRows.push(swDense(row1));
+    const swSummRow=swDense(row2);
+    if(lapData.length>0)lapData[0].forEach((v,i)=>swSummRow[DETAIL_COL+i]=v);
+    swRows.push(swSummRow);
+    for(let i=1;i<lapData.length;i++){
+      const r=Array(swTotalCols).fill('');
+      lapData[i].forEach((v,j)=>r[DETAIL_COL+j]=v);
+      swRows.push(r);
+    }
+    /* Trailing-responses row — responses after last lap, before End */
+    if(hasTrailCSV){
+      const tr=Array(swTotalCols).fill('');
+      tr[DETAIL_COL]=`After Lap ${s.lapCount}`;
+      tr[DETAIL_COL+1]='';
+      tr[DETAIL_COL+2]=s.trailingCorrect||0;
+      tr[DETAIL_COL+3]=s.trailingIncorrect||0;
+      swRows.push(tr);
+    }
+    const csv=swRows.map(toCSV).join('\n');
+    const a=document.createElement('a');
+    a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+    const safeName=s.name.replace(/[^a-z0-9]/gi,'_').substring(0,30);
+    const ts=new Date().toISOString().slice(0,10);
+    a.download=`DataTrack_${safeName}_${ts}.csv`;a.click();
+    return;
+  }
+
+  if(s.mode==='momentary'){
+    // Summary cols A-I (9 cols)
+    row1[0]='Target';      row2[0]=s.name;
+    row1[1]='Mode';        row2[1]='Momentary';
+    row1[2]='Date';        row2[2]=s.date;
+    row1[3]='Start Time';  row2[3]=s.startTime;
+    row1[4]='End Time';    row2[4]=s.endTime;
+    row1[5]='Duration';    row2[5]=s.totalElapsed;
+    row1[6]='YES';         row2[6]=s.yes;
+    row1[7]='NO';          row2[7]=s.no;
+    row1[8]='YES Rate';    row2[8]=s.pct+'%';
+    row1[9]='Observations';row2[9]=s.intervals;
+    // Detail header at col M (12)
+    row1[DETAIL_COL]='Observation #';
+    row1[DETAIL_COL+1]='Response';
+    row1[DETAIL_COL+2]='Time Stamp';
+  }else if(s.mode==='partial'){
+    // Summary cols A-L (12 cols)
+    row1[0]='Target';          row2[0]=s.name;
+    row1[1]='Mode';            row2[1]='Partial';
+    row1[2]='Date';            row2[2]=s.date;
+    row1[3]='Start Time';      row2[3]=s.startTime;
+    row1[4]='End Time';        row2[4]=s.endTime;
+    row1[5]='Total Elapsed';   row2[5]=s.totalElapsed;
+    row1[6]='YES';             row2[6]=s.yes;
+    row1[7]='NO';              row2[7]=s.no;
+    row1[8]='Occurrence %';    row2[8]=s.pct+'%';
+    row1[9]='Intervals';       row2[9]=s.intervals;
+    row1[10]='Total Taps';     row2[10]=s.totalTaps||0;
+    row1[11]='Avg Taps/YES';   row2[11]=s.avgTapsPerYes!==null?s.avgTapsPerYes:'N/A';
+    // Detail header at col M (12)
+    row1[DETAIL_COL]='Interval #';
+    row1[DETAIL_COL+1]='Result';
+    row1[DETAIL_COL+2]='Taps';
+    row1[DETAIL_COL+3]='Start Time';
+  }else{
+    // whole — Summary cols A-J (10 cols)
+    row1[0]='Target';          row2[0]=s.name;
+    row1[1]='Mode';            row2[1]='Whole';
+    row1[2]='Date';            row2[2]=s.date;
+    row1[3]='Start Time';      row2[3]=s.startTime;
+    row1[4]='End Time';        row2[4]=s.endTime;
+    row1[5]='Total Elapsed';   row2[5]=s.totalElapsed;
+    row1[6]='YES';             row2[6]=s.yes;
+    row1[7]='NO';              row2[7]=s.no;
+    row1[8]='Occurrence %';    row2[8]=s.pct+'%';
+    row1[9]='Intervals';       row2[9]=s.intervals;
+    // Detail header at col M (12)
+    row1[DETAIL_COL]='Interval #';
+    row1[DETAIL_COL+1]='Result';
+    row1[DETAIL_COL+2]='Start Time';
+  }
+
+  // Determine total columns needed
+  const maxDetailCols = s.mode==='partial' ? 4 : 3;
+  const totalCols = DETAIL_COL + maxDetailCols;
+
+  // Normalise a sparse row to a dense array of totalCols
+  const dense = (row) => {
+    const out=[];
+    for(let i=0;i<totalCols;i++) out.push(row[i]!==undefined?row[i]:'');
+    return out;
+  };
+
+  // Build all CSV rows
+  const csvRows=[];
+  csvRows.push(dense(row1));
+  // Data rows start at row index 1 (row 2 in spreadsheet)
+  // We merge the summary values row with the first detail data row if it exists
+  const detailData = s.mode==='momentary'
+    ? (s.mtsDetail||[]).map(e=>[e.seq, e.value==='yes'?'YES':'NO', e.wallTime])
+    : (s.intervalDetail||[]).map(e=>s.mode==='partial'
+        ? [e.num, e.value?'YES':'NO', e.taps!=null?e.taps:'N/A', e.startTime||'']
+        : [e.num, e.value?'YES':'NO', e.startTime||'']);
+
+  // Row 2: summary values + first detail data row (if any)
+  const summaryRow = dense(row2);
+  if(detailData.length>0){
+    const first=detailData[0];
+    first.forEach((v,i)=>summaryRow[DETAIL_COL+i]=v);
+  }
+  csvRows.push(summaryRow);
+
+  // Remaining detail rows (index 1 onward)
+  for(let i=1;i<detailData.length;i++){
+    const row=Array(totalCols).fill('');
+    detailData[i].forEach((v,j)=>row[DETAIL_COL+j]=v);
+    csvRows.push(row);
+  }
+
+  const csv=csvRows.map(toCSV).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  const safeName=s.name.replace(/[^a-z0-9]/gi,'_').substring(0,30);
+  const ts=new Date().toISOString().slice(0,10);
+  a.download=`DataTrack_${safeName}_${ts}.csv`;a.click();
+}
+
+/* ══════════════════════════════════════════════
+   MULTI-TIMER (v0.8) — frequency + duration cards
+   ══════════════════════════════════════════════ */
+let multiTimers=[], nextMTId=1;
+
+function makeMT(name, totalSecs){
+  return {id:nextMTId++, name, totalSecs, remaining:totalSecs, running:false, tick:null, finished:false,
+          correct:0, incorrect:0, startedOnce:false, startTime:null};
+}
+
+/* Targeted DOM update — avoids full re-render during tick so ripples survive */
+function updateMTDisplay(mt){
+  const pct=Math.round((1-mt.remaining/mt.totalSecs)*100);
+  const timeEl=document.getElementById('ftc-time-'+mt.id);
+  const progEl=document.getElementById('ftc-prog-'+mt.id);
+  const card=document.getElementById('ftc-card-'+mt.id);
+  if(timeEl)timeEl.textContent=fmtTime(Math.max(mt.remaining,0));
+  if(progEl)progEl.style.width=pct+'%';
+  if(card){
+    card.classList.toggle('running-card', mt.running&&!mt.finished);
+    card.classList.toggle('finished-card', mt.finished);
+  }
+}
+
+function renderMultiTimers(){
+  const grid=document.getElementById('multiGrid');
+  if(!multiTimers.length){grid.innerHTML='';return;}
+  grid.innerHTML=multiTimers.map(mt=>{
+    const pct=Math.round((1-mt.remaining/mt.totalSecs)*100);
+    const cardCls='ftimer-card'+(mt.finished?' finished-card':mt.running?' running-card':'');
+    const startCls='ftc-btn '+(mt.finished?'restart':mt.running?'pause-b':'start');
+    const startTxt=mt.finished?'Restart':mt.running?'Pause':'Start';
+    const endCls='ftc-btn end-b'+(mt.startedOnce?' active':'');
+    const inactiveCls=mt.startedOnce?'':' ftc-inactive';
+    return`<div class="${cardCls}" id="ftc-card-${mt.id}">
+      <div class="ftc-topbar">
+        <div class="ftc-name">${mt.name}</div>
+        <div class="ftc-menu-wrap">
+          <button class="ftc-menu-btn" onclick="toggleCardMenu('timer',${mt.id},event)">⋮</button>
+          <div class="ftc-dropdown" id="menu-timer-${mt.id}">
+            <button class="ftc-dropdown-item" onclick="openEditModal('timer',${mt.id})">Edit</button>
+            <button class="ftc-dropdown-item ftc-dd-danger" onclick="confirmDeleteCard('timer',${mt.id})">Delete</button>
+          </div>
+        </div>
+      </div>
+      <div class="ftc-zones">
+        <div class="ftc-zone ftc-zone-inc${inactiveCls}" id="ftc-zone-inc-${mt.id}" onclick="handleZoneTap(${mt.id},'inc',event)">
+          <span class="ftc-zone-count inc" id="ftc-inc-${mt.id}">${mt.incorrect}</span>
+          <span class="ftc-zone-sublbl">Incorrect</span>
+          <span class="ftc-hint" style="left:14px;">← tap</span>
+        </div>
+        <div class="ftc-zone ftc-zone-cor${inactiveCls}" id="ftc-zone-cor-${mt.id}" onclick="handleZoneTap(${mt.id},'cor',event)">
+          <span class="ftc-zone-count cor" id="ftc-cor-${mt.id}">${mt.correct}</span>
+          <span class="ftc-zone-sublbl">Correct</span>
+          <span class="ftc-hint" style="right:14px;">tap →</span>
+        </div>
+        <div class="ftc-overlay">
+          <div class="ftc-time" id="ftc-time-${mt.id}">${fmtTime(Math.max(mt.remaining,0))}</div>
+          <div class="ftc-prog"><div class="ftc-prog-fill" id="ftc-prog-${mt.id}" style="width:${pct}%"></div></div>
+        </div>
+      </div>
+      <div class="ftc-btns">
+        <button class="${endCls}" onclick="endMT(${mt.id})">End</button>
+        <button class="ftc-btn reset-b" onclick="resetMT(${mt.id})">Reset</button>
+        <button class="${startCls}" onclick="toggleMT(${mt.id})">${startTxt}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getMT(id){return multiTimers.find(t=>t.id===id);}
+
+function toggleMT(id){
+  const mt=getMT(id);if(!mt)return;
+  if(mt.finished){resetMT(id);return;}
+  if(mt.running){
+    mt.running=false;
+    clearInterval(mt.tick);
+  }else{
+    if(!mt.startedOnce){
+      mt.startedOnce=true;
+      mt.startTime=nowWallClock();
+    }
+    mt.running=true;
+    mt.tick=setInterval(()=>{
+      mt.remaining--;
+      if(mt.remaining<=0){
+        mt.remaining=0;
+        mt.running=false;
+        mt.finished=true;
+        clearInterval(mt.tick);
+        triggerAlert();
+        renderMultiTimers();
+        return;
+      }
+      updateMTDisplay(mt);
+    },1000);
+  }
+  renderMultiTimers();
+}
+
+function resetMT(id){
+  const mt=getMT(id);if(!mt)return;
+  clearInterval(mt.tick);
+  mt.running=false;mt.finished=false;
+  mt.remaining=mt.totalSecs;
+  mt.correct=0;mt.incorrect=0;
+  mt.startedOnce=false;mt.startTime=null;
+  renderMultiTimers();
+}
+
+function deleteMT(id){
+  const mt=getMT(id);if(mt)clearInterval(mt.tick);
+  multiTimers=multiTimers.filter(t=>t.id!==id);
+  renderMultiTimers();
+}
+
+function endMT(id){
+  const mt=getMT(id);
+  if(!mt||!mt.startedOnce)return;
+  const endTime=nowWallClock();
+  const timeRun=mt.totalSecs-mt.remaining;
+  const total=mt.correct+mt.incorrect;
+  const pct=total>0?Math.round(mt.correct/total*100):0;
+  sessions.unshift({
+    name:mt.name,
+    mode:'timer',
+    date:new Date().toLocaleDateString(),
+    startTime:mt.startTime||'',
+    endTime:endTime,
+    totalElapsed:fmtTime(timeRun),
+    correct:mt.correct,
+    incorrect:mt.incorrect,
+    total:total,
+    pct:pct
+  });
+  clearInterval(mt.tick);
+  mt.running=false;mt.finished=false;
+  mt.remaining=mt.totalSecs;
+  mt.correct=0;mt.incorrect=0;
+  mt.startedOnce=false;mt.startTime=null;
+  renderMultiTimers();
+  switchTab('summary');
+}
+
+/* Zone tap handler — updates DOM directly, no full re-render */
+function handleZoneTap(id, type, evt){
+  const mt=getMT(id);
+  if(!mt||!mt.startedOnce)return;
+  const isInc=(type==='inc');
+  if(isInc)mt.incorrect++;else mt.correct++;
+
+  /* Update count display in place */
+  const countEl=document.getElementById('ftc-'+(isInc?'inc':'cor')+'-'+id);
+  if(countEl)countEl.textContent=isInc?mt.incorrect:mt.correct;
+
+  /* Ripple */
+  const zone=document.getElementById('ftc-zone-'+(isInc?'inc':'cor')+'-'+id);
+  if(zone){
+    const r=document.createElement('span');r.className='ripple';
+    const rect=zone.getBoundingClientRect();
+    const rx=evt?evt.clientX-rect.left:rect.width/2;
+    const ry=evt?evt.clientY-rect.top:rect.height/2;
+    const rs=Math.max(rect.width,rect.height)*2;
+    r.style.cssText=`width:${rs}px;height:${rs}px;left:${rx-rs/2}px;top:${ry-rs/2}px`;
+    zone.appendChild(r);setTimeout(()=>r.remove(),500);
+    zone.classList.add('flash-z');
+    setTimeout(()=>zone.classList.remove('flash-z'),140);
+  }
+}
+
+/* Seed default timers */
+[{name:'Timer 1',m:10},{name:'Timer 2',m:5}].forEach(t=>multiTimers.push(makeMT(t.name,t.m*60)));
+renderMultiTimers();
+
+/* ══ STOPWATCHES ══ */
+let stopwatches=[],nextSWId=1;
+
+function renderStopwatches(){
+  const grid=document.getElementById('swGrid');
+  if(!stopwatches.length){grid.innerHTML='';return;}
+  grid.innerHTML=stopwatches.map(sw=>{
+    const cardCls='sw-card'+(sw.running?' running-sw':'');
+    const inactiveCls=sw.startedOnce?'':' ftc-inactive';
+    const startCls='ftc-btn '+(sw.running?'pause-b':'start');
+    const startTxt=sw.running?'Pause':'Start';
+    const endCls='ftc-btn end-b'+(sw.startedOnce?' active':'');
+    const lapCls='ftc-btn lap-b'+(sw.startedOnce?' active':'');
+    const lapTxt=sw.laps.length?`Lap ${sw.laps.length}: ${fmtTimeSW(sw.laps[sw.laps.length-1].elapsed)}`:'';
+    return`<div class="${cardCls}" id="sw-card-${sw.id}">
+      <div class="ftc-topbar">
+        <div class="ftc-name">${sw.name}</div>
+        <div class="ftc-menu-wrap">
+          <button class="ftc-menu-btn" onclick="toggleCardMenu('sw',${sw.id},event)">⋮</button>
+          <div class="ftc-dropdown" id="menu-sw-${sw.id}">
+            <button class="ftc-dropdown-item" onclick="openEditModal('sw',${sw.id})">Edit</button>
+            <button class="ftc-dropdown-item ftc-dd-danger" onclick="confirmDeleteCard('sw',${sw.id})">Delete</button>
+          </div>
+        </div>
+      </div>
+      <div class="ftc-zones">
+        <div class="ftc-zone ftc-zone-inc${inactiveCls}" id="sw-zone-inc-${sw.id}" onclick="handleSWZoneTap(${sw.id},'inc',event)">
+          <span class="ftc-zone-count inc" id="sw-inc-${sw.id}">${sw.incorrect}</span>
+          <span class="ftc-zone-sublbl">Incorrect</span>
+          <span class="ftc-hint" style="left:14px;">← tap</span>
+        </div>
+        <div class="ftc-zone ftc-zone-cor${inactiveCls}" id="sw-zone-cor-${sw.id}" onclick="handleSWZoneTap(${sw.id},'cor',event)">
+          <span class="ftc-zone-count cor" id="sw-cor-${sw.id}">${sw.correct}</span>
+          <span class="ftc-zone-sublbl">Correct</span>
+          <span class="ftc-hint" style="right:14px;">tap →</span>
+        </div>
+        <div class="ftc-overlay">
+          <div class="ftc-time" id="sw-time-${sw.id}">${fmtTimeSW(sw.elapsed)}</div>
+          <div class="ftc-sublbl" id="sw-lap-${sw.id}">${lapTxt}</div>
+        </div>
+      </div>
+      <div class="ftc-btns">
+        <button class="${endCls}" onclick="endSW(${sw.id})">End</button>
+        <button class="ftc-btn reset-b" onclick="resetSW(${sw.id})">Reset</button>
+        <button class="${lapCls}" onclick="lapSW(${sw.id})">Lap</button>
+        <button class="${startCls}" onclick="toggleSW(${sw.id})">${startTxt}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function fmtTimeSW(ms){const s=Math.floor(ms/1000),m=Math.floor(s/60),h=Math.floor(m/60);return pad(h)+':'+pad(m%60)+':'+pad(s%60);}
+function getSW(id){return stopwatches.find(s=>s.id===id);}
+
+/* Targeted DOM update during tick — preserves ripple animations */
+function updateSWDisplay(sw){
+  const timeEl=document.getElementById('sw-time-'+sw.id);
+  const lapEl=document.getElementById('sw-lap-'+sw.id);
+  if(timeEl)timeEl.textContent=fmtTimeSW(sw.elapsed);
+  if(lapEl)lapEl.textContent=sw.laps.length?`Lap ${sw.laps.length}: ${fmtTimeSW(sw.laps[sw.laps.length-1].elapsed)}`:'';
+}
+
+function toggleSW(id){
+  const sw=getSW(id);if(!sw)return;
+  if(sw.running){
+    sw.running=false;clearInterval(sw.tick);
+  }else{
+    if(!sw.startedOnce){sw.startedOnce=true;sw.startTime=nowWallClock();}
+    const start=Date.now()-sw.elapsed;
+    sw.running=true;
+    sw.tick=setInterval(()=>{sw.elapsed=Date.now()-start;updateSWDisplay(sw);},1000);
+  }
+  renderStopwatches();
+}
+
+function lapSW(id){
+  const sw=getSW(id);
+  if(!sw||!sw.startedOnce||sw.elapsed===0)return;
+  /* Per-lap delta: responses since the last lap marker (or since Start) */
+  const lapCorrect=sw.correct-sw.lastLapCorrect;
+  const lapIncorrect=sw.incorrect-sw.lastLapIncorrect;
+  sw.lastLapCorrect=sw.correct;
+  sw.lastLapIncorrect=sw.incorrect;
+  sw.laps.push({num:sw.laps.length+1, elapsed:sw.elapsed, correct:lapCorrect, incorrect:lapIncorrect});
+  renderStopwatches();
+}
+
+function resetSW(id){
+  const sw=getSW(id);if(!sw)return;
+  clearInterval(sw.tick);
+  sw.running=false;sw.elapsed=0;sw.laps=[];
+  sw.correct=0;sw.incorrect=0;
+  sw.lastLapCorrect=0;sw.lastLapIncorrect=0;
+  sw.startedOnce=false;sw.startTime=null;
+  renderStopwatches();
+}
+
+function deleteSW(id){
+  const sw=getSW(id);if(sw)clearInterval(sw.tick);
+  stopwatches=stopwatches.filter(s=>s.id!==id);
+  renderStopwatches();
+}
+
+/* Zone tap handler — direct DOM update, no full re-render */
+function handleSWZoneTap(id, type, evt){
+  const sw=getSW(id);
+  if(!sw||!sw.startedOnce)return;
+  const isInc=(type==='inc');
+  if(isInc)sw.incorrect++;else sw.correct++;
+  const countEl=document.getElementById('sw-'+(isInc?'inc':'cor')+'-'+id);
+  if(countEl)countEl.textContent=isInc?sw.incorrect:sw.correct;
+  const zone=document.getElementById('sw-zone-'+(isInc?'inc':'cor')+'-'+id);
+  if(zone){
+    const r=document.createElement('span');r.className='ripple';
+    const rect=zone.getBoundingClientRect();
+    const rx=evt?evt.clientX-rect.left:rect.width/2;
+    const ry=evt?evt.clientY-rect.top:rect.height/2;
+    const rs=Math.max(rect.width,rect.height)*2;
+    r.style.cssText=`width:${rs}px;height:${rs}px;left:${rx-rs/2}px;top:${ry-rs/2}px`;
+    zone.appendChild(r);setTimeout(()=>r.remove(),500);
+    zone.classList.add('flash-z');
+    setTimeout(()=>zone.classList.remove('flash-z'),140);
+  }
+}
+
+/* End — saves to Summary then resets card */
+function endSW(id){
+  const sw=getSW(id);
+  if(!sw||!sw.startedOnce)return;
+  const endTime=nowWallClock();
+  const total=sw.correct+sw.incorrect;
+  const pct=total>0?Math.round(sw.correct/total*100):0;
+  /* Responses recorded after the last lap marker (or all responses if no laps taken) */
+  const trailingCorrect=sw.correct-sw.lastLapCorrect;
+  const trailingIncorrect=sw.incorrect-sw.lastLapIncorrect;
+  const hasTrailing=(sw.laps.length>0)&&(trailingCorrect+trailingIncorrect>0);
+  sessions.unshift({
+    name:sw.name,
+    mode:'stopwatch',
+    date:new Date().toLocaleDateString(),
+    startTime:sw.startTime||'',
+    endTime:endTime,
+    totalElapsed:fmtTimeSW(sw.elapsed),
+    correct:sw.correct,
+    incorrect:sw.incorrect,
+    total:total,
+    pct:pct,
+    lapCount:sw.laps.length,
+    /* Each lap: {num, time, correct, incorrect} — backward-compat guards on read side */
+    laps:sw.laps.map(l=>({num:l.num, time:fmtTimeSW(l.elapsed), correct:l.correct, incorrect:l.incorrect})),
+    /* Responses logged after the final lap but before End */
+    trailingCorrect:hasTrailing?trailingCorrect:0,
+    trailingIncorrect:hasTrailing?trailingIncorrect:0
+  });
+  clearInterval(sw.tick);
+  sw.running=false;sw.elapsed=0;sw.laps=[];
+  sw.correct=0;sw.incorrect=0;
+  sw.lastLapCorrect=0;sw.lastLapIncorrect=0;
+  sw.startedOnce=false;sw.startTime=null;
+  renderStopwatches();
+  switchTab('summary');
+}
+
+[{name:'Stopwatch 1'},{name:'Stopwatch 2'}].forEach(s=>{
+  stopwatches.push({id:nextSWId++,name:s.name,elapsed:0,running:false,tick:null,laps:[],correct:0,incorrect:0,lastLapCorrect:0,lastLapIncorrect:0,startedOnce:false,startTime:null});
+});
+renderStopwatches();
+
+/* ══ ADD / EDIT MODAL ══ */
+let addModalMode='timer';
+let editTarget=null; // null = add mode, {type:'timer'|'sw', id} = edit mode
+function openAddModal(type){
+  addModalMode=type;editTarget=null;
+  document.getElementById('addModalTitle').textContent=type==='timer'?'New Timer':'New Stopwatch';
+  document.getElementById('addModalBtn').textContent='Add';
+  document.getElementById('durationField').style.display=type==='timer'?'':'none';
+  document.getElementById('newItemName').value='';
+  document.getElementById('newHr').value='0';document.getElementById('newMin').value='5';document.getElementById('newSec').value='0';
+  document.getElementById('addModal').classList.add('open');
+  document.getElementById('newItemName').focus();
+}
+function openEditModal(type,id){
+  closeAllMenus();
+  addModalMode=type;editTarget={type,id};
+  document.getElementById('addModalTitle').textContent=type==='timer'?'Edit Timer':'Edit Stopwatch';
+  document.getElementById('addModalBtn').textContent='Save';
+  document.getElementById('durationField').style.display=type==='timer'?'':'none';
+  if(type==='timer'){
+    const mt=getMT(id);if(!mt)return;
+    document.getElementById('newItemName').value=mt.name;
+    const ts=mt.totalSecs;
+    document.getElementById('newHr').value=Math.floor(ts/3600);
+    document.getElementById('newMin').value=Math.floor((ts%3600)/60);
+    document.getElementById('newSec').value=ts%60;
+  }else{
+    const sw=getSW(id);if(!sw)return;
+    document.getElementById('newItemName').value=sw.name;
+  }
+  document.getElementById('addModal').classList.add('open');
+  document.getElementById('newItemName').focus();
+}
+function closeAddModal(){document.getElementById('addModal').classList.remove('open');editTarget=null;}
+function confirmAdd(){
+  if(editTarget){
+    /* ── Edit mode ── */
+    const name=document.getElementById('newItemName').value.trim();
+    if(editTarget.type==='timer'){
+      const mt=getMT(editTarget.id);if(!mt){closeAddModal();return;}
+      const h=parseInt(document.getElementById('newHr').value)||0,m=parseInt(document.getElementById('newMin').value)||0,s=parseInt(document.getElementById('newSec').value)||0;
+      const total=h*3600+m*60+s;if(total<5){alert('Minimum 5 seconds.');return;}
+      if(name)mt.name=name;
+      mt.totalSecs=total;
+      if(!mt.startedOnce){mt.remaining=total;}
+      renderMultiTimers();
+    }else{
+      const sw=getSW(editTarget.id);if(!sw){closeAddModal();return;}
+      if(name)sw.name=name;
+      renderStopwatches();
+    }
+    closeAddModal();return;
+  }
+  /* ── Add mode ── */
+  const name=document.getElementById('newItemName').value.trim()||(addModalMode==='timer'?'Timer '+(multiTimers.length+1):'Stopwatch '+(stopwatches.length+1));
+  if(addModalMode==='timer'){
+    const h=parseInt(document.getElementById('newHr').value)||0,m=parseInt(document.getElementById('newMin').value)||0,s=parseInt(document.getElementById('newSec').value)||0;
+    const total=h*3600+m*60+s;if(total<5){alert('Minimum 5 seconds.');return;}
+    multiTimers.push(makeMT(name,total));renderMultiTimers();
+  }else{stopwatches.push({id:nextSWId++,name,elapsed:0,running:false,tick:null,laps:[],correct:0,incorrect:0,lastLapCorrect:0,lastLapIncorrect:0,startedOnce:false,startTime:null});renderStopwatches();}
+  closeAddModal();
+}
+
+/* ══ THREE-DOT MENU ══ */
+function closeAllMenus(){document.querySelectorAll('.ftc-dropdown.open').forEach(d=>d.classList.remove('open'));}
+function toggleCardMenu(type,id,evt){
+  evt.stopPropagation();
+  const menu=document.getElementById('menu-'+type+'-'+id);
+  const wasOpen=menu&&menu.classList.contains('open');
+  closeAllMenus();
+  if(!wasOpen&&menu)menu.classList.add('open');
+}
+document.addEventListener('click',()=>closeAllMenus());
+
+/* ══ GENERALIZED DELETE CONFIRM ══ */
+let pendingDelete=null;
+function confirmDeleteCard(type,id){
+  closeAllMenus();
+  pendingDelete={type,id};
+  document.getElementById('confirmMsg').textContent=type==='timer'?'Delete this timer?':'Delete this stopwatch?';
+  document.getElementById('confirmSub').textContent='This action cannot be undone.';
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function confirmClearSession(){
+  pendingDelete={type:'session'};
+  document.getElementById('confirmMsg').textContent='Permanently erase this session?';
+  document.getElementById('confirmSub').textContent='This action cannot be undone.';
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('open');pendingDelete=null;}
+function doDeleteConfirm(){
+  if(!pendingDelete){closeConfirm();return;}
+  if(pendingDelete.type==='timer')deleteMT(pendingDelete.id);
+  else if(pendingDelete.type==='sw')deleteSW(pendingDelete.id);
+  else if(pendingDelete.type==='session')doDeleteSession();
+  closeConfirm();
+}
+function doDeleteSession(){
+  if(openSessionIndex===null)return;
+  sessions.splice(openSessionIndex,1);
+  closeDetail();renderSummary();
+}
+
+/* ══ AUDIO / SETTINGS ══ */
+function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(s){try{const ctx=getCtx();if(ctx.state==='suspended')ctx.resume();if(s==='beep'){const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=880;o.type='square';g.gain.setValueAtTime(0.25,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);o.start();o.stop(ctx.currentTime+0.18);}else if(s==='chime'){[523,659,784].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;o.type='sine';const t=ctx.currentTime+i*0.13;g.gain.setValueAtTime(0.22,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.32);o.start(t);o.stop(t+0.32);});}else if(s==='bell'){[1318,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;o.type='sine';const t=ctx.currentTime+i*0.09;g.gain.setValueAtTime(0.28,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.65);o.start(t);o.stop(t+0.65);});}}catch(e){}}
+function triggerAlert(){if(alertType==='tone'||alertType==='both')playTone(toneStyle);if((alertType==='vibrate'||alertType==='both')&&navigator.vibrate)navigator.vibrate([100,50,100,50,200]);if(useFlash){const f=document.getElementById('flashOvl');f.classList.add('flash');setTimeout(()=>f.classList.remove('flash'),250);}}
+function openSettings(){document.getElementById('settingsModal').classList.add('open');}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('open');}
+function setAlert(t){alertType=t;['tone','vibrate','both','none'].forEach(x=>document.getElementById('opt-'+x).classList.toggle('active',x===t));}
+function setTone(s){toneStyle=s;['beep','chime','bell'].forEach(x=>document.getElementById('tone-'+x).classList.toggle('active',x===s));playTone(s);}
+function setFlash(v){useFlash=v;document.getElementById('flash-on').classList.toggle('active',v);document.getElementById('flash-off').classList.toggle('active',!v);}
+function setTheme(v){
+  themeMode=v;
+  document.body.classList.toggle('light-mode',v==='light');
+  document.getElementById('theme-dark').classList.toggle('active',v==='dark');
+  document.getElementById('theme-light').classList.toggle('active',v==='light');
+}
+function setSouthpaw(v){
+  southpaw=v;
+  document.body.classList.toggle('southpaw',v);
+  document.getElementById('hand-right').classList.toggle('active',!v);
+  document.getElementById('hand-left').classList.toggle('active',v);
+}
+
+document.getElementById('addModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAddModal();});
+document.getElementById('settingsModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeSettings();});
+document.getElementById('confirmOverlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeConfirm();});
+</script>
+</body>
+</html>
